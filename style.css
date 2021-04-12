@@ -30,7 +30,7 @@ header div.content {
 }
 
 header .h4 {
-	width: 5rem;
+	width: 6rem;
 	text-align: justify;
 	margin-right: 1.4rem;
 	display: inline-block;
@@ -64,7 +64,7 @@ a#submit, a#clear {
 
 #page {
 	width: 1100px;
-	margin: 11.5rem auto 0 auto;
+	margin: 13.5rem auto 0 auto;
 	padding: 0 1rem;
 }
 
