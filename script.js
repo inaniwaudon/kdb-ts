@@ -37,6 +37,7 @@ window.onload = function () {
 		form.day.value = "null";
 		form.period.value = "null";
 		form.online.value = "null";
+		form.year.value = "null";
 
 		checkName.checked = true;
 		checkNo.checked = true;
@@ -102,6 +103,16 @@ window.onload = function () {
 			let missMatchesDay = options.day != "null" && line[6].indexOf(options.day) < 0;
 			let missMatchesPeriod = options.period != "null" && line[6].indexOf(options.period) < 0;
 			let missMatchesOnline = options.online != "null" && line[10].indexOf(options.online) < 0;
+
+			let missMatchesYear;
+			if (line[4].indexOf("-") < 0) {
+				missMatchesYear = options.year != "null" && line[4].indexOf(options.year) < 0;
+			} else {
+				let minYear = line[4].replace(/\s-\s[1-6]/g, "");
+				let maxYear = line[4].replace(/[1-6]\s-\s/g, "");
+				missMatchesYear = options.year != "null" && (options.year < minYear || maxYear < options.year);
+			}
+
 			let missMatchesReq_A = options.req_A != "null" && options.req_A != line[12];
 
 			if (
@@ -111,6 +122,7 @@ window.onload = function () {
 				missMatchesDay ||
 				missMatchesPeriod ||
 				missMatchesOnline ||
+				missMatchesYear ||
 				missMatchesReq_A) {
 				index++;
 				continue;
@@ -187,6 +199,7 @@ window.onload = function () {
 		options.day = form.day.value;
 		options.period = form.period.value;
 		options.online = form.online.value;
+		options.year = form.year.value;
 
 		clearTimeout(timeout);
 
