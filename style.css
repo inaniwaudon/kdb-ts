@@ -10,6 +10,11 @@ header {
 	top: 0;
 	background: linear-gradient(90deg, rgba(242,230,255,0.95), rgba(255,255,255,0.95) 250px);
 }
+form * {
+	text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+	font-size: 1rem;
+}
 
 header form {
 	position: sticky;
@@ -17,9 +22,10 @@ header form {
 }
 
 header p {
+	line-height: 1.8rem;
 	margin:0;
 }
-header p + p {
+p#requirement {
 	margin-top: 0.4rem;
 }
 
@@ -37,7 +43,6 @@ header .h4 {
 }
 
 header input[type="text"], header select {
-	width: 22rem;
 	height: 1.8rem;
 	line-height: 1.8rem;
 	margin-right: 0.2rem;
@@ -50,17 +55,44 @@ header input[type="text"], header select {
 	-webkit-appearance: none;
 }
 
-a#submit, a#clear {
-	color: #fff;
+header input[type="text"], header select#req_A {
+	width: 22rem;
+}
+
+header #period-sp {
+	line-height: 1.8rem;
+	margin-top: 0.4rem;
+	display: none;
+}
+
+header .button {
+	width: 8rem;
 	height: 1rem;
 	line-height:1rem;
+	text-align: center;
 	text-decoration: none;
 	padding:0.45rem 0.4rem;
 	border-radius: 4px;
-	background: #60c;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.4);
 	display: inline-block;
 }
-
+#submit {
+	margin-right: 1rem;
+}
+#submit, #submit-sp {
+	color: #fff;
+	background: #60c;
+}
+#clear-sp {
+	margin: 0 0.2rem 0 4.5rem;
+}
+#clear, #clear-sp {
+	color: #60c;
+	background: linear-gradient(30deg, #f2e6ff, #fff);
+}
+#clear-sp, #submit-sp {
+	display: none;
+}
 
 #page {
 	width: 1100px;
@@ -142,4 +174,27 @@ footer {
 form {
 	position: sticky;
 	top: 0;
+}
+
+
+/* media query */
+@media screen and (max-width: 1100px) {
+	header .h4 {
+		display: none;
+	}
+	#clear, #submit {
+		display: none;
+	}
+	#clear-sp, #submit-sp {
+		display: inline-block;
+	}
+	#keyword-options {
+		display: block;
+	}
+	header #period {
+		display: none;
+	}
+	header #period-sp {
+		display: block;
+	}
 }
