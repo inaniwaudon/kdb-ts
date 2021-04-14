@@ -3,7 +3,9 @@ window.onload = function () {
 	const keyword_input = document.querySelector("input[type=\"text\"]");
 	const form = document.getElementsByTagName("form")[0];
 	const req_A_input = document.getElementById("req_A");
-	const clearButton = document.getElementById("clear");
+
+	let submitButton = document.getElementById("submit");
+	let clearButton = document.getElementById("clear");
 	const downloadLink = document.getElementById("download");
 
 	// checkbox
@@ -16,6 +18,18 @@ window.onload = function () {
 	// if the device is iOS, displayed lines are limited 500.
 	const isIOS = ["iPhone", "iPad", "iPod"].some(name => navigator.userAgent.indexOf(name) > -1);
 	const lineLimit = 500;
+
+	// if the device width is under 1100px
+	const isUnder1100px = window.matchMedia("screen and (max-width: 1100px)").matches;
+	let selectModule, selectDay, selectPeriod;
+
+	if (isUnder1100px) {
+		selectModule = document.getElementById("select-module");
+		selectDay = document.getElementById("select-day");
+		selectPeriod = document.getElementById("select-period");
+		submitButton = document.getElementById("submit-sp");
+		clearButton = document.getElementById("clear-sp");
+	} 
 
 	let data = null;
 	let timeout = void 0;
@@ -37,6 +51,7 @@ window.onload = function () {
 		form.day.value = "null";
 		form.period.value = "null";
 		form.online.value = "null";
+		form.year.value = "null";
 
 		checkName.checked = true;
 		checkNo.checked = true;
@@ -102,6 +117,16 @@ window.onload = function () {
 			let missMatchesDay = options.day != "null" && line[6].indexOf(options.day) < 0;
 			let missMatchesPeriod = options.period != "null" && line[6].indexOf(options.period) < 0;
 			let missMatchesOnline = options.online != "null" && line[10].indexOf(options.online) < 0;
+
+			let missMatchesYear;
+			if (line[4].indexOf("-") < 0) {
+				missMatchesYear = options.year != "null" && line[4].indexOf(options.year) < 0;
+			} else {
+				let minYear = line[4].replace(/\s-\s[1-6]/g, "");
+				let maxYear = line[4].replace(/[1-6]\s-\s/g, "");
+				missMatchesYear = options.year != "null" && (options.year < minYear || maxYear < options.year);
+			}
+
 			let missMatchesReq_A = options.req_A != "null" && options.req_A != line[12];
 
 			if (
@@ -111,6 +136,7 @@ window.onload = function () {
 				missMatchesDay ||
 				missMatchesPeriod ||
 				missMatchesOnline ||
+				missMatchesYear ||
 				missMatchesReq_A) {
 				index++;
 				continue;
@@ -182,19 +208,36 @@ window.onload = function () {
 
 		options.keyword = keyword_input.value;
 		options.req_A = req_A_input.options[req_A_input.selectedIndex].value;
-		options.season = form.season.value;
-		options.module_ = form.module.value;
-		options.day = form.day.value;
-		options.period = form.period.value;
 		options.online = form.online.value;
+		options.year = form.year.value;
+
+		if (isUnder1100px) {
+			let seasonModule = selectModule.options[selectModule.selectedIndex].value;
+			if (seasonModule == "null") {
+				options.season = "null";
+				options.module_ = "null";
+			}
+			else {
+				options.season = seasonModule.slice(0,1);
+				options.module_ = seasonModule.slice(1);
+				console.log(options.season+  " " + options.module_);
+			}
+			options.day = selectDay.options[selectDay.selectedIndex].value;
+			options.period = selectPeriod.options[selectPeriod.selectedIndex].value;
+		}
+		else {
+			options.season = form.season.value;
+			options.module_ = form.module.value;
+			options.day = form.day.value;
+			options.period = form.period.value;
+		}
 
 		clearTimeout(timeout);
 
 		updateTable(options);
 	}
 
-	let submit = document.getElementById("submit");
-	submit.onclick = search;
+	submitButton.onclick = search;
 	downloadLink.onclick = downloadCSV;
 
 	fetch("kdb.json")

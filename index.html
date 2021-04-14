@@ -3,8 +3,23 @@
 
 <head>
 	<title>筑波大学 KdBっぽいなにか</title>
-	<meta charset="utf-8">
+	<meta charset="utf-8" />
+	<meta name="description" content="筑波大学 KdBっぽいなにか" />
+	<meta name="keywords" content="筑波大学,シラバス,KbB,alternative-tsukuba-kdb,alternative-kdb" />
+	<meta name="author" content="いなにわうどん" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:creator" content="@kyoto_mast21" />
+	<meta name="twitter:site" content="@kyoto_mast21" />
+	<meta property="og:url" content="https://make-it-tsukuba.github.io/alternative-tsukuba-kdb/" />
+	<meta property="og:title" content="alternative-tsukuba-kdb" />
+	<meta property="og:description" content="筑波大学 KdBっぽいなにか" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<!-- <link rel="icon" href="favicon.ico" />
+	<meta property="og:image" content="favicon.ico" /> -->
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 	<link href="style.css" rel="stylesheet" />
+
 	<script src="script.js"></script>
 </head>
 
@@ -14,14 +29,16 @@
 			<form>
 				<p>
 					<span class="h4">キーワード</span>
-					<input type="text" placeholder="科目番号は前方一致、その他は正規表現に対応" /> <a href="#" id="submit">検索</a>
-					<label><input type="checkbox" id="check-name" checked />科目名</label>
-					<label><input type="checkbox" id="check-no" checked />科目番号</label>
-					<label><input type="checkbox" id="check-room" />教室</label>
-					<label><input type="checkbox" id="check-person" />教員名</label>
-					<label><input type="checkbox" id="check-abstract" />概要</label>
+					<input type="text" placeholder="科目番号は前方一致、その他は正規表現に対応" /> <a href="#" id="submit" class="button">検索</a>
+					<span id="keyword-options">
+						<label><input type="checkbox" id="check-name" checked />科目名</label>
+						<label><input type="checkbox" id="check-no" checked />科目番号</label>
+						<label><input type="checkbox" id="check-room" />教室</label>
+						<label><input type="checkbox" id="check-person" />教員名</label>
+						<label><input type="checkbox" id="check-abstract" />概要</label>
+					</span>
 				</p>
-				<p>
+				<p id="requirement">
 					<span class="h4">要件</span>
 					<select id="req_A">
 						<option value="null">指定なし</option>
@@ -57,44 +74,93 @@
 						<option>グローバル教育院　地球規模課題学位プログラム</option>
 						<option>English Courses</option>
 					</select>
-					<a href="#" id="clear">検索条件をクリア</a>
+					<a href="#" id="clear" class="button">検索条件をクリア</a>
 				</p>
-				<p>
-					<span class="h4">学期</span>
-					<label><input type="radio" name="season" value="null" checked>―</label>
-					<label><input type="radio" name="season" value="春">春</label>
-					<label><input type="radio" name="season" value="秋">秋</label>
-					／
-					<label><input type="radio" name="module" value="null" checked>―</label>
-					<label><input type="radio" name="module" value="A">A</label>
-					<label><input type="radio" name="module" value="B">B</label>
-					<label><input type="radio" name="module" value="C">C</label>
-				</p>
-				<p>
-					<span class="h4">時限</span>
-					<label><input type="radio" name="day" value="null" checked>―</label>
-					<label><input type="radio" name="day" value="月">月</label>
-					<label><input type="radio" name="day" value="火">火</label>
-					<label><input type="radio" name="day" value="水">水</label>
-					<label><input type="radio" name="day" value="木">木</label>
-					<label><input type="radio" name="day" value="金">金</label>
-					<label><input type="radio" name="day" value="土">土</label>
-					<label><input type="radio" name="day" value="日">日</label>
-					／
-					<label><input type="radio" name="period" value="null" checked>―</label>
-					<label><input type="radio" name="period" value="1">1</label>
-					<label><input type="radio" name="period" value="2">2</label>
-					<label><input type="radio" name="period" value="3">3</label>
-					<label><input type="radio" name="period" value="4">4</label>
-					<label><input type="radio" name="period" value="5">5</label>
-					<label><input type="radio" name="period" value="6">6</label>
-				</p>
+				<div id="period">
+					<p>
+						<span class="h4">学期</span>
+						<label><input type="radio" name="season" value="null" checked>―</label>
+						<label><input type="radio" name="season" value="春">春</label>
+						<label><input type="radio" name="season" value="秋">秋</label>
+						／
+						<label><input type="radio" name="module" value="null" checked>―</label>
+						<label><input type="radio" name="module" value="A">A</label>
+						<label><input type="radio" name="module" value="B">B</label>
+						<label><input type="radio" name="module" value="C">C</label>
+					</p>
+					<p>
+						<span class="h4">時限</span>
+						<label><input type="radio" name="day" value="null" checked>―</label>
+						<label><input type="radio" name="day" value="月">月</label>
+						<label><input type="radio" name="day" value="火">火</label>
+						<label><input type="radio" name="day" value="水">水</label>
+						<label><input type="radio" name="day" value="木">木</label>
+						<label><input type="radio" name="day" value="金">金</label>
+						<label><input type="radio" name="day" value="土">土</label>
+						<label><input type="radio" name="day" value="日">日</label>
+						／
+						<label><input type="radio" name="period" value="null" checked>―</label>
+						<label><input type="radio" name="period" value="1">1</label>
+						<label><input type="radio" name="period" value="2">2</label>
+						<label><input type="radio" name="period" value="3">3</label>
+						<label><input type="radio" name="period" value="4">4</label>
+						<label><input type="radio" name="period" value="5">5</label>
+						<label><input type="radio" name="period" value="6">6</label>
+					</p>
+				</div>
+				<div id="period-sp">
+					<p>
+						<span class="h4">学期・時限</span>
+						<select id="select-module">
+							<option value="null">すべて</option>
+							<option>春A</option>
+							<option>春B</option>
+							<option>春C</option>
+							<option>秋A</option>
+							<option>秋B</option>
+							<option>秋C</option>
+						</select>モジュール
+						<select id="select-day">
+							<option value="null">-</option>
+							<option>月</option>
+							<option>火</option>
+							<option>水</option>
+							<option>木</option>
+							<option>金</option>
+							<option>土</option>
+							<option>日</option>
+						</select>曜日
+						<select id="select-period">
+							<option value="null">-</option>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+						</select>限
+					</p>
+				</div>
 				<p>
 					<span class="h4">実施形態</span>
 					<label><input type="radio" name="online" value="null" checked>―</label>
 					<label><input type="radio" name="online" value="対面">対面</label>
 					<label><input type="radio" name="online" value="オンデマンド">オンデマンド</label>
 					<label><input type="radio" name="online" value="同時双方向">同時双方向</label>
+				</p>
+				<p>
+					<span class="h4">標準履修年次</span>
+					<label><input type="radio" name="year" value="null" checked>―</label>
+					<label><input type="radio" name="year" value="1">1</label>
+					<label><input type="radio" name="year" value="2">2</label>
+					<label><input type="radio" name="year" value="3">3</label>
+					<label><input type="radio" name="year" value="4">4</label>
+					<label><input type="radio" name="year" value="5">5</label>
+					<label><input type="radio" name="year" value="6">6</label>
+				</p>
+				<p>
+					<a href="#" id="clear-sp" class="button">検索条件をクリア</a>
+					<a href="#" id="submit-sp" class="button">検索</a>
 				</p>
 			</form>
 		</div>
