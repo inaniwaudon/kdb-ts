@@ -167,6 +167,7 @@ tr td:nth-child(8) {
 }
 
 footer {
+	line-height: 1.8rem;
 	text-align: center;
 	margin: 1rem 0 2rem 0;
 }

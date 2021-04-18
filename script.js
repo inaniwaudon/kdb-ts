@@ -15,6 +15,8 @@ window.onload = function () {
 	const checkRoom = document.getElementById("check-room");
 	const checkAbstract = document.getElementById("check-abstract");
 
+	const updatedDate = document.getElementById("updated-date");
+
 	// if the device is iOS, displayed lines are limited 500.
 	const isIOS = ["iPhone", "iPad", "iPod"].some(name => navigator.userAgent.indexOf(name) > -1);
 	const lineLimit = 500;
@@ -30,6 +32,10 @@ window.onload = function () {
 		submitButton = document.getElementById("submit-sp");
 		clearButton = document.getElementById("clear-sp");
 	} 
+
+	// updated date
+	const updated = "2021/04/04";
+	updatedDate.innerHTML = updated;
 
 	let data = null;
 	let timeout = void 0;
