@@ -2,7 +2,9 @@ window.onload = function () {
 	const table = document.querySelector("main table tbody");
 	const keyword_input = document.querySelector("input[type=\"text\"]");
 	const form = document.getElementsByTagName("form")[0];
-	const req_A_input = document.getElementById("req_A");
+	const reqA_input = document.getElementById("req-a");
+	const reqB_input = document.getElementById("req-b");
+	const reqC_input = document.getElementById("req-c");
 
 	let submitButton = document.getElementById("submit");
 	let clearButton = document.getElementById("clear");
@@ -34,9 +36,10 @@ window.onload = function () {
 	} 
 
 	// updated date
-	const updated = "2021/04/04";
+	const updated = "2021/04/19";
 	updatedDate.innerHTML = updated;
 
+	let codeTypes = null;
 	let data = null;
 	let timeout = void 0;
 
@@ -51,7 +54,7 @@ window.onload = function () {
 	clearButton.addEventListener('click', (evt) => {
 		evt.stopPropagation();
 		keyword_input.value = "";
-		req_A_input.selectedIndex = 0;
+		reqA_input.selectedIndex = 0;
 		form.season.value = "null";
 		form.module.value = "null";
 		form.day.value = "null";
@@ -133,8 +136,11 @@ window.onload = function () {
 				missMatchesYear = options.year != "null" && (options.year < minYear || maxYear < options.year);
 			}
 
-			let missMatchesReq_A = options.req_A != "null" && options.req_A != line[12];
+			let missMatchesReq_A = options.reqA != "null" && options.reqA != line[11];
+			let missMatchesReq_B = options.reqB != "null" && options.reqB != line[12];
+			let missMatchesReq_C = options.reqC != "null" && options.reqC != line[13];
 
+			//console.log(missMatchesReq_A, missMatchesReq_B, missMatchesReq_C)
 			if (
 				matchesKeyword ||
 				missMatchesSeason ||
@@ -143,7 +149,7 @@ window.onload = function () {
 				missMatchesPeriod ||
 				missMatchesOnline ||
 				missMatchesYear ||
-				missMatchesReq_A) {
+				(missMatchesReq_A || missMatchesReq_B || missMatchesReq_C)) {
 				index++;
 				continue;
 			}
@@ -213,7 +219,9 @@ window.onload = function () {
 		let options = {};
 
 		options.keyword = keyword_input.value;
-		options.req_A = req_A_input.options[req_A_input.selectedIndex].value;
+		options.reqA = reqA_input.options[reqA_input.selectedIndex].value;
+		options.reqB = reqB_input.selectedIndex > -1 ? reqB_input.options[reqB_input.selectedIndex].value : "null";
+		options.reqC = reqC_input.selectedIndex > -1 ? reqC_input.options[reqC_input.selectedIndex].value : "null";
 		options.online = form.online.value;
 		options.year = form.year.value;
 
@@ -226,7 +234,6 @@ window.onload = function () {
 			else {
 				options.season = seasonModule.slice(0,1);
 				options.module_ = seasonModule.slice(1);
-				console.log(options.season+  " " + options.module_);
 			}
 			options.day = selectDay.options[selectDay.selectedIndex].value;
 			options.period = selectPeriod.options[selectPeriod.selectedIndex].value;
@@ -246,7 +253,56 @@ window.onload = function () {
 	submitButton.onclick = search;
 	downloadLink.onclick = downloadCSV;
 
-	fetch("kdb.json")
-		.then(response => response.json())
-		.then(json => { data = json; search(null); });
+
+	const constructOptions = (select, types) => {
+		deleteOptions(select);
+		{
+			let option = document.createElement("option");
+			option.value = "null";
+			option.innerHTML = "指定なし";
+			select.appendChild(option);
+		}
+		for (let key in types) {
+			let option = document.createElement("option");
+			option.innerHTML = key;
+			select.appendChild(option);
+		}
+	}
+
+	const deleteOptions = (select) => {
+		select.innerHTML = "";
+	}
+
+	const selectOnChange = (isA) => {
+		deleteOptions(reqC_input);
+		const selected = isA ? reqA_input : reqB_input;
+		const selectedValue = selected.options[selected.selectedIndex].value;
+		const subSelect = isA ? reqB_input : reqC_input;
+		const reqA_value = reqA_input.options[reqA_input.selectedIndex].value;
+		const reqB_value = reqB_input.selectedIndex > -1 ? reqB_input.options[reqB_input.selectedIndex].value : "null";
+
+		if (selectedValue == "null") {
+			deleteOptions(subSelect);
+		}
+		else {
+			let types = isA ? codeTypes[reqA_value] : codeTypes[reqA_value].childs[reqB_value];
+			constructOptions(subSelect, types.childs);
+		}
+	}
+
+	
+	// initialize
+	(async () => {
+		// construct options of requirements
+		let response = await fetch("code-types.json");
+		codeTypes = await response.json();
+		constructOptions(reqA_input, codeTypes);
+		reqA_input.addEventListener("change", () => selectOnChange(true));
+		reqB_input.addEventListener("change", () => selectOnChange(false));
+
+		// read a json
+		response = await fetch("kdb.json");
+		data = await response.json();
+		search(null);
+	})();
 };
