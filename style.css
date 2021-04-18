@@ -55,8 +55,11 @@ header input[type="text"], header select {
 	-webkit-appearance: none;
 }
 
-header input[type="text"], header select#req_A {
+header input[type="text"] {
 	width: 22rem;
+}
+header select.requirement {
+	width: calc((22rem - 0.4rem * 6)/ 3);
 }
 
 header #period-sp {
