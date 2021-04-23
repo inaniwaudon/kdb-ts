@@ -103,6 +103,10 @@ header .button {
 	padding: 0 1rem;
 }
 
+main {
+	padding-top: 0.9em;
+}
+
 table {
 	width: 100%;
 	font-size: 0.9rem;
