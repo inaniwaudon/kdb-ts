@@ -10,20 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          setup-python: 3.7
-      - name: Install dependencies
-        run: pip install requests
-      - name: Synchronize the csv file with an up-to-date one
-        run: |
-          cd make-json
-          python download.py
       - name: git commit
         run: |
-          git config --global user.email "w.yuto0916@gmail.com"
-          git config --global user.name "Wada Yuto"
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
           git add .
           git commit -m "update csv"
       - name: git push
