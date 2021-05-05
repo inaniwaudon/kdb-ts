@@ -1,3 +1,4 @@
+import os
 import datetime
 import requests
 import urllib.parse
@@ -49,6 +50,9 @@ response = session.post(do_url, data=csv_post)
 # output
 date = datetime.datetime.now()
 filename = "/csv/kdb-%04d%02d%02d.csv" % (date.year, date.month, date.day)
+
+if not os.path.isdir("/csv"):
+	os.mkdir("/csv")
 
 with open(filename, "w", encoding="utf-8") as fp :
 	fp.write(response.text)
