@@ -24,8 +24,11 @@ jobs:
         run: |
           cd make-json
           python download.py
-      - name: commit and merge
+      - name: git commit
         run: |
           git add .
           git commit -m "update csv"
-          git push origin master
+      - name: git push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
