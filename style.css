@@ -201,4 +201,7 @@ form {
 	header #period-sp {
 		display: block;
 	}
+	#page {
+		margin: 15rem auto 0 auto;
+	}
 }
