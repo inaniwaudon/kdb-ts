@@ -24,6 +24,8 @@ post = {
 	"_excludeFukaikoFlg": 1,
 }
 
+requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
+
 kdb_url = "https://kdb.tsukuba.ac.jp/"
 session = requests.session()
 response = session.get(kdb_url)
