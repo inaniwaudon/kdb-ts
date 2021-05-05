@@ -1,14 +1,38 @@
-name: csv-update
+name: CSV scheduled update
 
 on:
   schedule:
-  - cron: '0 0 * * *'
+  - cron: '0 0 * * 0'
   workflow_dispatch:
 
-job:
-  first-job:
+jobs:
+  update:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8]
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        run: ls -a
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          setup-python: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip
+          pip install requests
+      - name: Synchronize the csv file with an up-to-date one
+        run: |
+          cd make-json
+          python download.py
+          python csv-json.py ../csv/kdb-$(date +%Y%m%d).csv list.txt False
+          cd ..
+      - name: Push and Commit
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add .
+          git commit -m "update csv: $(date +%Y%m%d)"
+          git push origin master
