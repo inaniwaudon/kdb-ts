@@ -49,10 +49,11 @@ response = session.post(do_url, data=csv_post)
 
 # output
 date = datetime.datetime.now()
-filename = "/csv/kdb-%04d%02d%02d.csv" % (date.year, date.month, date.day)
+csv_dir = "../csv"
+filename = "%s/kdb-%04d%02d%02d.csv" % (csv_dir, date.year, date.month, date.day)
 
-if not os.path.isdir("/csv"):
-	os.mkdir("/csv")
+if not os.path.isdir(csv_dir):
+	os.mkdir(csv_dir)
 
 with open(filename, "w", encoding="utf-8") as fp :
 	fp.write(response.text)
