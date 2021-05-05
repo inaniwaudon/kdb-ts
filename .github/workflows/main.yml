@@ -2,7 +2,7 @@ name: csv-update
 
 on:
   schedule:
-  - cron: "0 0 0 0 0"
+  - cron: '0 0 * * *'
   workflow_dispatch:
 
 job:
@@ -11,4 +11,4 @@ job:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
-      run: ls -a
+        run: ls -a
