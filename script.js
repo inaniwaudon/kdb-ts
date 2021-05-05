@@ -35,10 +35,6 @@ window.onload = function () {
 		clearButton = document.getElementById("clear-sp");
 	} 
 
-	// updated date
-	const updated = "2021/04/19";
-	updatedDate.innerHTML = updated;
-
 	let codeTypes = null;
 	let data = null;
 	let timeout = void 0;
@@ -302,7 +298,11 @@ window.onload = function () {
 
 		// read a json
 		response = await fetch("kdb.json");
-		data = await response.json();
+		kdbJson = await response.json();
+		data = kdbJson.subject;
+		updated = kdbJson.updated;
+
 		search(null);
+		updatedDate.innerHTML = updated;
 	})();
 };
