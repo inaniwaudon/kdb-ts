@@ -1,4 +1,5 @@
 import csv
+import datetime
 import json
 import argparse
 
@@ -80,7 +81,11 @@ with open(args.types, encoding="utf-8") as fp:
 
 
 # csv
-output = []
+date = datetime.datetime.now()
+output = {
+	"updated": "%d/%02d/%02d"% (date.year, date.month, date.day),
+	"subject": []
+}
 
 with open(args.csv) as fp :
 	reader = csv.reader(fp)
@@ -110,16 +115,12 @@ with open(args.csv) as fp :
 		third = searched_types[2] if len(searched_types) >= 3 else ""
 
 		line += [first, second, third]
-		output.append(line)
+		output["subject"].append(line)
 
 
 # output
-with open("kdb.csv", "w") as fp :
-	writer = csv.writer(fp, lineterminator='\n')
-	writer.writerows(output)
-
-with open("kdb.json", "w", encoding="utf-8") as fp :
+with open("../kdb.json", "w", encoding="utf-8") as fp :
 	json.dump(output, fp, indent="\t", ensure_ascii=False)
 
-with open("code-types.json", "w", encoding="utf-8") as fp :
+with open("../code-types.json", "w", encoding="utf-8") as fp :
 	json.dump(types, fp, indent="\t", ensure_ascii=False)
