@@ -27,7 +27,7 @@ jobs:
         run: |
           cd make-json
           python download.py
-          python csv-json.py ../csv/$(date +%Y%m%d).csv False
+          python csv-json.py ../csv/kdb-$(date +%Y%m%d).csv list.txt False
           cd ..
       - name: Push and Commit
         run: |
