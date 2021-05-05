@@ -22,8 +22,8 @@ jobs:
           python download.py
       - name: git commit
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.email "GitHub Action"
+          git config --global user.email "w.yuto0916@gmail.com"
+          git config --global user.name "Wada Yuto"
           git add .
           git commit -m "update csv"
       - name: git push
