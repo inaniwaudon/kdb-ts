@@ -1,14 +1,14 @@
 name: csv-update
 
 on:
-	schedule:
-		- cron: "0 0 0 0 0"
-	workflow_dispatch:
+  schedule:
+    - cron: "0 0 0 0 0"
+  workflow_dispatch:
 
 job:
-	first-job:
-		runs-on: ubuntu-latest
-		steps:
-			- uses: actions/checkout@v2
-			- name: Set up Python
-			  run: ls -a
+  first-job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        run: ls -a
