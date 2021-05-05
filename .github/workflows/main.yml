@@ -31,6 +31,8 @@ jobs:
           cd ..
       - name: Push and Commit
         run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
           git add .
           git commit -m "update csv: $(date +%Y%m%d)"
           git push origin master
