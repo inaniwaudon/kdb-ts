@@ -47,7 +47,7 @@
 					</select>
 					<select id="req-c" class="requirement">
 					</select>
-					<a href="#" id="clear" class="button">検索条件をクリア</a>
+					<a href="#" id="clear" class="button sub">検索条件をクリア</a>
 				</p>
 				<div id="period">
 					<p>
@@ -62,28 +62,13 @@
 						<label><input type="radio" name="module" value="C">C</label>
 					</p>
 					<p>
-						<span class="h4">時限</span>
-						<label><input type="radio" name="day" value="null" checked>―</label>
-						<label><input type="radio" name="day" value="月">月</label>
-						<label><input type="radio" name="day" value="火">火</label>
-						<label><input type="radio" name="day" value="水">水</label>
-						<label><input type="radio" name="day" value="木">木</label>
-						<label><input type="radio" name="day" value="金">金</label>
-						<label><input type="radio" name="day" value="土">土</label>
-						<label><input type="radio" name="day" value="日">日</label>
-						／
-						<label><input type="radio" name="period" value="null" checked>―</label>
-						<label><input type="radio" name="period" value="1">1</label>
-						<label><input type="radio" name="period" value="2">2</label>
-						<label><input type="radio" name="period" value="3">3</label>
-						<label><input type="radio" name="period" value="4">4</label>
-						<label><input type="radio" name="period" value="5">5</label>
-						<label><input type="radio" name="period" value="6">6</label>
+						<span class="h4">曜日・時限</span>
+						<span id="selected-periods">指定なし</span>
+						<a id="display-timetable" class="button sub">選択</a>
 					</p>
 				</div>
 				<div id="period-sp">
 					<p>
-						<span class="h4">学期・時限</span>
 						<select id="select-module">
 							<option value="null">すべて</option>
 							<option>春A</option>
@@ -92,26 +77,9 @@
 							<option>秋A</option>
 							<option>秋B</option>
 							<option>秋C</option>
-						</select>モジュール
-						<select id="select-day">
-							<option value="null">-</option>
-							<option>月</option>
-							<option>火</option>
-							<option>水</option>
-							<option>木</option>
-							<option>金</option>
-							<option>土</option>
-							<option>日</option>
-						</select>曜日
-						<select id="select-period">
-							<option value="null">-</option>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-							<option>4</option>
-							<option>5</option>
-							<option>6</option>
-						</select>限
+						</select><!--
+						--><span class="module">モジュール</span><!--
+						--><a id="display-timetable-sp" class="button sub">曜日・時限を選択</a>
 					</p>
 				</div>
 				<p>
@@ -132,16 +100,22 @@
 					<label><input type="radio" name="year" value="6">6</label>
 				</p>
 				<p>
-					<a href="#" id="clear-sp" class="button">検索条件をクリア</a>
+					<a href="#" id="clear-sp" class="button sub">検索条件をクリア</a>
 					<a href="#" id="submit-sp" class="button">検索</a>
 				</p>
 			</form>
 		</div>
 	</header>
 
+	<div id="timetable">
+		<div class="content">
+		</div>
+		<p>ドラッグで複数選択</p>
+	</div>
+
 	<div id="page">
 		<main>
-			<table>
+			<table id="body">
 				<thead>
 					<tr>
 						<th>科目番号／科目名</th>
