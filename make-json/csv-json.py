@@ -5,7 +5,7 @@ import argparse
 
 parser = argparse.ArgumentParser();
 parser.add_argument("csv", help="an input csv file")
-parser.add_argument("types", help="an text file of the relation between requirement classification and subject codes")
+parser.add_argument("types", help="a text file of the relation between requirement classification and subject codes")
 parser.add_argument("contains_graduate", help="contains subjects for graduate school; \"True\" or \"False\"")
 
 args = parser.parse_args()
