@@ -22,6 +22,9 @@ window.onload = function () {
 	const selectedPeriodsSpan = document.getElementById("selected-periods");
 	const timetable = document.getElementById("timetable");
 	const timetableContent = document.querySelector("#timetable .content");
+	const checkConcentration = document.getElementById("check-concentration");
+	const checkNegotiable = document.getElementById("check-negotiable");
+	const checkAsNeeded = document.getElementById("check-asneeded");
 	let timetableLink = document.getElementById("display-timetable");
 
 	// if the device is iOS, displayed lines are limited 100.
@@ -266,7 +269,12 @@ window.onload = function () {
 
 			// period
 			if (line.length == 14) {
-				let periods = createTimeTable(false);
+				let periods = {
+					concentration : line[6].indexOf("集中") > -1,
+					negotiable : line[6].indexOf("応談") > -1,
+					asneeded : line[6].indexOf("随時") > -1,
+					period: createTimeTable(false)
+				};
 				let originalPeriods = line[6].split(/[, ]/);
 				let day = null;
 				for (let period of originalPeriods) {
@@ -278,7 +286,7 @@ window.onload = function () {
 					if (time_str.length > 0) {
 						let time = Number(time_str);
 						if (day != null)
-							periods[day][time-1] = true;
+							periods.period[day][time-1] = true;
 					}
 				}
 				line.push(periods);
@@ -290,12 +298,19 @@ window.onload = function () {
 				for (let time in options.period[day]) {
 					if (options.period[day][time]) {
 						isNotSpecifiedPeriod = false;
-						if (line[14][day][time])
+						if (line[14].period[day][time])
 							missMatchesPeriod = false;
 					}
 				}
 			}
-			if (isNotSpecifiedPeriod)
+
+			if ((options.concentration && line[14].concentration) ||
+				(options.negotiable && line[14].negotiable) ||
+				(options.asneeded && line[14].asneeded))
+				missMatchesPeriod = false;
+
+
+			if (isNotSpecifiedPeriod && !options.concentration && !options.negotiable && !options.asneeded)
 				missMatchesPeriod = false;
 
 			// other options
@@ -397,6 +412,10 @@ window.onload = function () {
 		options.reqC = reqC_input.selectedIndex > -1 ? reqC_input.options[reqC_input.selectedIndex].value : "null";
 		options.online = form.online.value;
 		options.year = form.year.value;
+		options.period = selectedPeriods;
+		options.concentration = checkConcentration.checked;
+		options.negotiable = checkNegotiable.checked;
+		options.asneeded = checkAsNeeded.checked;
 
 		if (isUnder1100px) {
 			let seasonModule = selectModule.options[selectModule.selectedIndex].value;
@@ -408,13 +427,10 @@ window.onload = function () {
 				options.season = seasonModule.slice(0,1);
 				options.module_ = seasonModule.slice(1);
 			}
-			console.log(selectedPeriods);
-			options.period = selectedPeriods;
 		}
 		else {
 			options.season = form.season.value;
 			options.module_ = form.module.value;
-			options.period = selectedPeriods;
 		}
 
 		clearTimeout(timeout);
