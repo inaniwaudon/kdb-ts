@@ -29,7 +29,8 @@
 			<form>
 				<p>
 					<span class="h4">キーワード</span>
-					<input type="text" placeholder="科目番号は前方一致、その他は正規表現に対応" /> <a href="#" id="submit" class="button">検索</a>
+					<input type="text" placeholder="科目番号は前方一致、その他は正規表現に対応" /><!--
+					--><a href="#" id="submit" class="button right">検索</a>
 					<span id="keyword-options">
 						<label><input type="checkbox" id="check-name" checked />科目名</label>
 						<label><input type="checkbox" id="check-no" checked />科目番号</label>
@@ -42,12 +43,10 @@
 					<span class="h4">要件</span>
 					<select id="req-a" class="requirement">
 						<option value="null">指定なし</option>
-					</select>
-					<select id="req-b" class="requirement">
-					</select>
-					<select id="req-c" class="requirement">
-					</select>
-					<a href="#" id="clear" class="button sub">検索条件をクリア</a>
+					</select><!--
+					--><select id="req-b" class="requirement"></select><!--
+					--><select id="req-c" class="requirement"></select><!--
+					--><a href="#" id="clear" class="button right sub">検索条件をクリア</a>
 				</p>
 				<div id="period">
 					<p>
@@ -63,8 +62,8 @@
 					</p>
 					<p>
 						<span class="h4">曜日・時限</span>
-						<span id="selected-periods">指定なし</span>
-						<a id="display-timetable" class="button sub">選択</a>
+						<span id="selected-periods">指定なし</span><!--
+						--><a id="display-timetable" class="button right sub">選択</a>
 					</p>
 				</div>
 				<div id="period-sp">

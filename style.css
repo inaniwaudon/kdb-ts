@@ -45,7 +45,6 @@ header .h4 {
 header input[type="text"], header select {
 	height: 1.8rem;
 	line-height: 1.8rem;
-	margin-right: 0.2rem;
 	padding:0 0.4rem;
 	border: none;
 	border-radius: 4px;
@@ -56,7 +55,7 @@ header input[type="text"], header select {
 }
 
 #selected-periods {
-	width: 23rem;
+	width: 22.8rem;
 	line-height: 1em;
 	font-size: 0.9rem;
     white-space: nowrap;
@@ -81,7 +80,11 @@ header input[type="text"] {
 }
 
 header select.requirement {
-	width: calc((22rem - 0.4rem * 6)/ 3);
+	width: calc((22.8rem - 0.4rem * 6 - 0.5rem * 2)/ 3);
+}
+
+header select.requirement + select.requirement {
+	margin-left: 0.5rem;
 }
 
 #period-sp {
@@ -93,6 +96,10 @@ header select.requirement {
 #period-sp .module {
 	height: 1.8rem;
 	line-height: 1.8rem;
+}
+
+#select-module {
+	margin-right: 0.4rem;
 }
 
 #display-timetable-sp {
@@ -116,6 +123,10 @@ header .button {
 	display: inline-block;
 }
 
+header .button.right {
+	margin-left: 0.5rem;
+}
+
 #submit {
 	margin-right: 1rem;
 }
@@ -126,7 +137,7 @@ header .button {
 }
 
 #clear-sp {
-	margin: 0 0.2rem 0 4.5rem;
+	margin: 0 0.2rem 0 4.8rem;
 }
 
 header .button.sub {
