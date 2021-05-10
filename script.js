@@ -7,9 +7,12 @@ window.onload = function () {
 	const reqC_input = document.getElementById("req-c");
 
 	let submitButton = document.getElementById("submit");
-	let clearButton = document.getElementById("clear");
 	const downloadLink = document.getElementById("download");
 	const updatedDate = document.getElementById("updated-date");
+
+	//clear button
+	let clearButton = document.getElementById("clear");
+	let clearButtonListener;
 
 	// checkbox
 	const checkName = document.getElementById("check-name");
@@ -26,13 +29,14 @@ window.onload = function () {
 	const checkNegotiable = document.getElementById("check-negotiable");
 	const checkAsNeeded = document.getElementById("check-asneeded");
 	let timetableLink = document.getElementById("display-timetable");
+	let timetableListener;
 
 	// if the device is iOS, displayed lines are limited 100.
 	const isIOS = ["iPhone", "iPad", "iPod"].some(name => navigator.userAgent.indexOf(name) > -1);
 	const lineLimit = 100;
 
 	// if the device width is under 1100px
-	const isUnder1100px = window.matchMedia("screen and (max-width: 1100px)").matches;
+	let isUnder1100px = window.matchMedia("screen and (max-width: 1100px)").matches;
 	let selectModule, selectDay, selectPeriod;
 
 	if (isUnder1100px) {
@@ -56,7 +60,7 @@ window.onload = function () {
 		}
 	});
 
-	clearButton.addEventListener('click', (evt) => {
+	clearButton.addEventListener('click', clearButtonListener = (evt) => {
 		evt.stopPropagation();
 		keyword_input.value = "";
 		reqA_input.selectedIndex = 0;
@@ -192,7 +196,7 @@ window.onload = function () {
 		const displayMs = 200;
 		const supportsTouch = "ontouchend" in document;
 	
-		timetableLink.addEventListener(supportsTouch ? "touchstart" : "click", () => {
+		timetableLink.addEventListener(supportsTouch ? "touchstart" : "click", timetableListener = () => {
 			let linkBounding = timetableLink.getBoundingClientRect();
 			timetable.style.top = (window.pageYOffset + linkBounding.bottom + 10) + "px";
 			timetable.style.left = (window.pageXOffset + linkBounding.left) + "px";
@@ -200,7 +204,7 @@ window.onload = function () {
 			timetable.style.display = "block";
 			selectedPeriodsSpan.innerHTML = "カレンダーをクリックして曜日・時限を選択";
 			setTimeout(() => {
-				timetable.style.opacity = 1;	
+				timetable.style.opacity = 1;
 			}, 0);
 		});
 
@@ -400,7 +404,7 @@ window.onload = function () {
 	const search = (e) => {
 		// clear tbody contents
 		table.innerHTML = '';
-		
+
 		if (e !== null) {
 			e.stopPropagation();
 		}
@@ -496,4 +500,29 @@ window.onload = function () {
 		search(null);
 		updatedDate.innerHTML = updated;
 	})();
+
+	window.addEventListener('resize', () => {
+		let supportsTouch = "ontouchend" in document
+		timetableLink.removeEventListener(supportsTouch ? "touchstart" : "click", timetableListener)
+		clearButton.removeEventListener('click', clearButtonListener)
+
+		isUnder1100px = window.matchMedia("screen and (max-width: 1100px)").matches;
+		if (isUnder1100px) {
+			selectModule = document.getElementById("select-module");
+			selectDay = document.getElementById("select-day");
+			selectPeriod = document.getElementById("select-period");
+			submitButton = document.getElementById("submit-sp");
+			clearButton = document.getElementById("clear-sp");
+			timetableLink = document.getElementById("display-timetable-sp");
+
+		} else {
+			submitButton = document.getElementById("submit");
+			clearButton = document.getElementById("clear");
+			timetableLink = document.getElementById("display-timetable");
+		}
+
+		submitButton.onclick = search;
+		timetableLink.addEventListener(supportsTouch ? "touchstart" : "click", timetableListener);
+		clearButton.addEventListener('click', clearButtonListener);
+	});
 };
