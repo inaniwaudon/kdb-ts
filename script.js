@@ -78,6 +78,10 @@ window.onload = function () {
 		checkPerson.checked = false;
 		checkRoom.checked = false;
 		checkAbstract.checked = false;
+
+		checkConcentration.checked = false;
+		checkNegotiable.checked = false;
+		checkAsNeeded.checked = false;
 	});
 
 
