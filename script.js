@@ -1,12 +1,15 @@
 window.onload = function () {
-	const table = document.querySelector("main table tbody");
+	const table = document.querySelector("table#body tbody");
 	const keyword_input = document.querySelector("input[type=\"text\"]");
 	const form = document.getElementsByTagName("form")[0];
-	const req_A_input = document.getElementById("req_A");
+	const reqA_input = document.getElementById("req-a");
+	const reqB_input = document.getElementById("req-b");
+	const reqC_input = document.getElementById("req-c");
 
 	let submitButton = document.getElementById("submit");
 	let clearButton = document.getElementById("clear");
 	const downloadLink = document.getElementById("download");
+	const updatedDate = document.getElementById("updated-date");
 
 	// checkbox
 	const checkName = document.getElementById("check-name");
@@ -14,10 +17,19 @@ window.onload = function () {
 	const checkPerson = document.getElementById("check-person");
 	const checkRoom = document.getElementById("check-room");
 	const checkAbstract = document.getElementById("check-abstract");
+	
+	// timetable
+	const selectedPeriodsSpan = document.getElementById("selected-periods");
+	const timetable = document.getElementById("timetable");
+	const timetableContent = document.querySelector("#timetable .content");
+	const checkConcentration = document.getElementById("check-concentration");
+	const checkNegotiable = document.getElementById("check-negotiable");
+	const checkAsNeeded = document.getElementById("check-asneeded");
+	let timetableLink = document.getElementById("display-timetable");
 
-	// if the device is iOS, displayed lines are limited 500.
+	// if the device is iOS, displayed lines are limited 100.
 	const isIOS = ["iPhone", "iPad", "iPod"].some(name => navigator.userAgent.indexOf(name) > -1);
-	const lineLimit = 500;
+	const lineLimit = 100;
 
 	// if the device width is under 1100px
 	const isUnder1100px = window.matchMedia("screen and (max-width: 1100px)").matches;
@@ -29,8 +41,10 @@ window.onload = function () {
 		selectPeriod = document.getElementById("select-period");
 		submitButton = document.getElementById("submit-sp");
 		clearButton = document.getElementById("clear-sp");
-	} 
+		timetableLink = document.getElementById("display-timetable-sp");
+	}
 
+	let codeTypes = null;
 	let data = null;
 	let timeout = void 0;
 
@@ -45,13 +59,15 @@ window.onload = function () {
 	clearButton.addEventListener('click', (evt) => {
 		evt.stopPropagation();
 		keyword_input.value = "";
-		req_A_input.selectedIndex = 0;
+		reqA_input.selectedIndex = 0;
 		form.season.value = "null";
 		form.module.value = "null";
-		form.day.value = "null";
-		form.period.value = "null";
 		form.online.value = "null";
 		form.year.value = "null";
+
+		for (let periods of timetablePeriods)
+			for (let period of periods)
+				period.classList.remove("selected");
 
 		checkName.checked = true;
 		checkNo.checked = true;
@@ -59,6 +75,146 @@ window.onload = function () {
 		checkRoom.checked = false;
 		checkAbstract.checked = false;
 	});
+
+
+	// timetable
+	const createTimeTable = (filled) => {
+		let table = new Array(daysofweek.length);
+		for (let i in daysofweek)
+			table[i] = new Array(maxPeriod).fill(filled);
+		return table;
+	};
+
+	const daysofweek = ["月", "火", "水", "木", "金", "土", "日"];
+	const maxPeriod = 6;
+	let timetablePeriods = createTimeTable(null);
+	let selectedPeriods = createTimeTable(false);
+
+	{
+		let displaysTimetable = false;
+		let beforeSelected = null;
+		let selectedDownPeriods;
+
+		for (let y = 0; y <= maxPeriod; y++) {
+			let line = document.createElement("div");
+			line.classList.add("line");
+			timetableContent.appendChild(line);
+
+			for (let x = -1; x < 7; x++) {
+				let item = document.createElement("div");
+				item.classList.add("item");
+				line.appendChild(item);
+
+				if (y > 0 && x == -1) {
+					item.innerHTML = y;
+					item.classList.add("no");
+				}
+				else if (y == 0 && x > -1) {
+					item.innerHTML = daysofweek[x];
+					item.classList.add("day");
+				}
+				else if (y > 0 && x >= 0) {
+					timetablePeriods[x][y-1] = item;
+					item.classList.add("period");
+
+					const changeSelectedPeriods = (x, y) => {
+						if (!beforeSelected)
+							return;
+						
+						for (let yi = 0; yi < maxPeriod; yi++) {
+							for (let xi = 0; xi < daysofweek.length; xi++) {
+								let target = timetablePeriods[xi][yi];
+								if (Math.min(x, beforeSelected.x) <= xi && xi <= Math.max(x, beforeSelected.x)
+									&& Math.min(y, beforeSelected.y) <= yi+1 && yi+1 <= Math.max(y, beforeSelected.y)) {
+									if (selectedDownPeriods[xi][yi])
+										target.classList.remove("selected");
+									else
+										target.classList.add("selected");								
+									selectedPeriods[xi][yi] = !selectedDownPeriods[xi][yi];
+								}
+								else {
+									if (selectedDownPeriods[xi][yi])
+										target.classList.add("selected");
+									else
+										target.classList.remove("selected");
+									selectedPeriods[xi][yi] = selectedDownPeriods[xi][yi];
+								}
+							}
+						}
+					};
+
+					const onmousedown = (e) => {
+						beforeSelected = { x: x, y: y };
+						selectedDownPeriods = JSON.parse(JSON.stringify(selectedPeriods));
+						changeSelectedPeriods(x, y);
+					};
+
+					const onmousemove = (e) => {
+						if (selectedDownPeriods)
+							changeSelectedPeriods(x, y);
+					};
+
+					const onmouseup = (e) => {
+						selectedDownPeriods = null;
+						beforeSelected = null;
+
+						let text = "";
+						for (let day in selectedPeriods) {
+							let dayText = ""
+							for (let time in selectedPeriods[day])
+								if (selectedPeriods[day][time])
+									dayText += Number(time) + 1;
+							if (dayText.length > 0)
+								text += `<span class="day-label"><span class="day">${daysofweek[day]}</span>${dayText}</span>`;
+						}
+						text = text.length > 0 ? text : "指定なし";
+						if (isUnder1100px)
+							timetableLink.innerHTML = text;
+						else
+							selectedPeriodsSpan.innerHTML = text;
+					};
+
+					const supportsTouch = "ontouchend" in document;
+					if (supportsTouch) {
+						item.addEventListener("touchstart", onmousedown);
+						item.addEventListener("touchmove", onmousemove);
+						item.addEventListener("touchend", onmouseup);
+					}
+					else {
+						item.addEventListener("mousedown", onmousedown);
+						item.addEventListener("mousemove", onmousemove);
+						item.addEventListener("mouseup", onmouseup);
+					}
+				}
+			}
+		}
+
+		const displayMs = 200;
+		const supportsTouch = "ontouchend" in document;
+	
+		timetableLink.addEventListener(supportsTouch ? "touchstart" : "click", () => {
+			let linkBounding = timetableLink.getBoundingClientRect();
+			timetable.style.top = (window.pageYOffset + linkBounding.bottom + 10) + "px";
+			timetable.style.left = (window.pageXOffset + linkBounding.left) + "px";
+			displaysTimetable = true;
+			timetable.style.display = "block";
+			selectedPeriodsSpan.innerHTML = "カレンダーをクリックして曜日・時限を選択";
+			setTimeout(() => {
+				timetable.style.opacity = 1;	
+			}, 0);
+		});
+
+		document.addEventListener("click", (e) => {
+			let query = "#timetable, " + (isUnder1100px ? "#display-timetable-sp" : "#display-timetable");
+			if (!e.target.closest(query)) {
+				timetable.style.opacity = 0;
+				setTimeout(() => {
+					timetable.style.display = "none";
+				}, displayMs);
+			}
+		});
+	}
+
 
 	// display a line of the table
 	const createLine = (line) => {
@@ -111,11 +267,55 @@ window.onload = function () {
 			let matchesKeyword = options.keyword != "" &&
 				(matchesNo && matchesName && matchesRoom && matchesPerson && matchesAbstract);
 
+			// period
+			if (line.length == 14) {
+				let periods = {
+					concentration : line[6].indexOf("集中") > -1,
+					negotiable : line[6].indexOf("応談") > -1,
+					asneeded : line[6].indexOf("随時") > -1,
+					period: createTimeTable(false)
+				};
+				let originalPeriods = line[6].split(/[, ]/);
+				let day = null;
+				for (let period of originalPeriods) {
+					let firstChar = period.substr(0,1);
+					if (daysofweek.includes(firstChar))
+						day = daysofweek.indexOf(firstChar);
+
+					let time_str = period.replace(/[^0-9]/g, "");
+					if (time_str.length > 0) {
+						let time = Number(time_str);
+						if (day != null)
+							periods.period[day][time-1] = true;
+					}
+				}
+				line.push(periods);
+			}
+
+			let missMatchesPeriod = true;
+			let isNotSpecifiedPeriod = true;
+			for (let day in options.period) {
+				for (let time in options.period[day]) {
+					if (options.period[day][time]) {
+						isNotSpecifiedPeriod = false;
+						if (line[14].period[day][time])
+							missMatchesPeriod = false;
+					}
+				}
+			}
+
+			if ((options.concentration && line[14].concentration) ||
+				(options.negotiable && line[14].negotiable) ||
+				(options.asneeded && line[14].asneeded))
+				missMatchesPeriod = false;
+
+
+			if (isNotSpecifiedPeriod && !options.concentration && !options.negotiable && !options.asneeded)
+				missMatchesPeriod = false;
+
 			// other options
 			let missMatchesSeason = options.season != "null" && line[5].indexOf(options.season) < 0;
 			let missMatchesModule = options.module_ != "null" && line[5].indexOf(options.module_) < 0;
-			let missMatchesDay = options.day != "null" && line[6].indexOf(options.day) < 0;
-			let missMatchesPeriod = options.period != "null" && line[6].indexOf(options.period) < 0;
 			let missMatchesOnline = options.online != "null" && line[10].indexOf(options.online) < 0;
 
 			let missMatchesYear;
@@ -127,17 +327,18 @@ window.onload = function () {
 				missMatchesYear = options.year != "null" && (options.year < minYear || maxYear < options.year);
 			}
 
-			let missMatchesReq_A = options.req_A != "null" && options.req_A != line[12];
-
+			let missMatchesReq_A = options.reqA != "null" && options.reqA != line[11];
+			let missMatchesReq_B = options.reqB != "null" && options.reqB != line[12];
+			let missMatchesReq_C = options.reqC != "null" && options.reqC != line[13];
+			
 			if (
 				matchesKeyword ||
 				missMatchesSeason ||
 				missMatchesModule ||
-				missMatchesDay ||
 				missMatchesPeriod ||
 				missMatchesOnline ||
 				missMatchesYear ||
-				missMatchesReq_A) {
+				(missMatchesReq_A || missMatchesReq_B || missMatchesReq_C)) {
 				index++;
 				continue;
 			}
@@ -179,8 +380,7 @@ window.onload = function () {
 
 	// download CSV file: `kdb_YYYYMMDDhhmmdd.csv`
 	const downloadCSV = () => {
-		makeCSV(
-			downloadLink, document.querySelector("main table"), `kdb_${getDateString()}.csv`);
+		makeCSV(downloadLink, document.querySelector("main table"), `kdb_${getDateString()}.csv`);
 	}
 
 	// get YYYYMMDDhhmmdd
@@ -207,9 +407,15 @@ window.onload = function () {
 		let options = {};
 
 		options.keyword = keyword_input.value;
-		options.req_A = req_A_input.options[req_A_input.selectedIndex].value;
+		options.reqA = reqA_input.options[reqA_input.selectedIndex].value;
+		options.reqB = reqB_input.selectedIndex > -1 ? reqB_input.options[reqB_input.selectedIndex].value : "null";
+		options.reqC = reqC_input.selectedIndex > -1 ? reqC_input.options[reqC_input.selectedIndex].value : "null";
 		options.online = form.online.value;
 		options.year = form.year.value;
+		options.period = selectedPeriods;
+		options.concentration = checkConcentration.checked;
+		options.negotiable = checkNegotiable.checked;
+		options.asneeded = checkAsNeeded.checked;
 
 		if (isUnder1100px) {
 			let seasonModule = selectModule.options[selectModule.selectedIndex].value;
@@ -220,27 +426,74 @@ window.onload = function () {
 			else {
 				options.season = seasonModule.slice(0,1);
 				options.module_ = seasonModule.slice(1);
-				console.log(options.season+  " " + options.module_);
 			}
-			options.day = selectDay.options[selectDay.selectedIndex].value;
-			options.period = selectPeriod.options[selectPeriod.selectedIndex].value;
 		}
 		else {
 			options.season = form.season.value;
 			options.module_ = form.module.value;
-			options.day = form.day.value;
-			options.period = form.period.value;
 		}
 
 		clearTimeout(timeout);
-
 		updateTable(options);
 	}
 
 	submitButton.onclick = search;
 	downloadLink.onclick = downloadCSV;
 
-	fetch("kdb.json")
-		.then(response => response.json())
-		.then(json => { data = json; search(null); });
+
+	const constructOptions = (select, types) => {
+		deleteOptions(select);
+		{
+			let option = document.createElement("option");
+			option.value = "null";
+			option.innerHTML = "指定なし";
+			select.appendChild(option);
+		}
+		for (let key in types) {
+			let option = document.createElement("option");
+			option.innerHTML = key;
+			select.appendChild(option);
+		}
+	}
+
+	const deleteOptions = (select) => {
+		select.innerHTML = "";
+	}
+
+	const selectOnChange = (isA) => {
+		deleteOptions(reqC_input);
+		const selected = isA ? reqA_input : reqB_input;
+		const selectedValue = selected.options[selected.selectedIndex].value;
+		const subSelect = isA ? reqB_input : reqC_input;
+		const reqA_value = reqA_input.options[reqA_input.selectedIndex].value;
+		const reqB_value = reqB_input.selectedIndex > -1 ? reqB_input.options[reqB_input.selectedIndex].value : "null";
+
+		if (selectedValue == "null") {
+			deleteOptions(subSelect);
+		}
+		else {
+			let types = isA ? codeTypes[reqA_value] : codeTypes[reqA_value].childs[reqB_value];
+			constructOptions(subSelect, types.childs);
+		}
+	}
+
+	
+	// initialize
+	(async () => {
+		// construct options of requirements
+		let response = await fetch("code-types.json");
+		codeTypes = await response.json();
+		constructOptions(reqA_input, codeTypes);
+		reqA_input.addEventListener("change", () => selectOnChange(true));
+		reqB_input.addEventListener("change", () => selectOnChange(false));
+
+		// read a json
+		response = await fetch("kdb.json");
+		kdbJson = await response.json();
+		data = kdbJson.subject;
+		updated = kdbJson.updated;
+
+		search(null);
+		updatedDate.innerHTML = updated;
+	})();
 };
