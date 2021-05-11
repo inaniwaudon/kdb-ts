@@ -64,8 +64,8 @@ window.onload = function () {
 		evt.stopPropagation();
 		keyword_input.value = "";
 		reqA_input.selectedIndex = 0;
-		reqB_input.selectedIndex = "";
-		reqC_input.selectedIndex = "";
+		deleteOptions(reqB_input);
+		deleteOptions(reqC_input);
 		form.season.value = "null";
 		form.module.value = "null";
 		form.online.value = "null";
