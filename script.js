@@ -186,14 +186,14 @@ window.onload = function () {
 
 					const supportsTouch = "ontouchend" in document;
 					if (supportsTouch) {
-						item.addEventListener("touchstart", onmousedown);
-						item.addEventListener("touchmove", onmousemove);
-						item.addEventListener("touchend", onmouseup);
+						item.addEventListener("touchstart", onmousedown,{ passive: true });
+						item.addEventListener("touchmove", onmousemove,{ passive: true });
+						item.addEventListener("touchend", onmouseup,{ passive: true });
 					}
 					else {
-						item.addEventListener("mousedown", onmousedown);
-						item.addEventListener("mousemove", onmousemove);
-						item.addEventListener("mouseup", onmouseup);
+						item.addEventListener("mousedown", onmousedown,{ passive: true });
+						item.addEventListener("mousemove", onmousemove,{ passive: true });
+						item.addEventListener("mouseup", onmouseup,{ passive: true });
 					}
 				}
 			}
@@ -212,7 +212,7 @@ window.onload = function () {
 			setTimeout(() => {
 				timetable.style.opacity = 1;
 			}, 0);
-		});
+		},{ passive: true });
 
 		document.addEventListener("click", (e) => {
 			let query = "#timetable, " + (isUnder1100px ? "#display-timetable-sp" : "#display-timetable");
@@ -530,5 +530,5 @@ window.onload = function () {
 		submitButton.onclick = search;
 		timetableLink.addEventListener(supportsTouch ? "touchstart" : "click", timetableListener);
 		clearButton.addEventListener('click', clearButtonListener);
-	});
+	},{ passive: true });
 };
