@@ -328,3 +328,31 @@ form {
 		display: block;
 	}
 }
+
+/* Bookmark checkbox */
+input[type="checkbox"].bookmark  {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	line-height: 1.7em;
+	width: 1.7em !important;
+	height: 1.7em;
+	background: transparent;
+	border-style: none;
+	border-color: transparent;
+	text-align: left;
+	color: #aaa;
+	font-weight: bold;
+	position: relative;
+	vertical-align: middle;
+	margin-bottom: 0.2em;
+}
+
+input[type="checkbox"].bookmark:before {
+	content: "★";
+	font-size: 1.7em;
+}
+
+input[type="checkbox"].bookmark:checked {
+	color: #60c;
+}

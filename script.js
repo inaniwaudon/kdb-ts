@@ -20,6 +20,7 @@ window.onload = function () {
 	const checkPerson = document.getElementById("check-person");
 	const checkRoom = document.getElementById("check-room");
 	const checkAbstract = document.getElementById("check-abstract");
+	const checkBookmark = document.getElementById("check-bookmark")
 	
 	// timetable
 	const selectedPeriodsSpan = document.getElementById("selected-periods");
@@ -80,6 +81,7 @@ window.onload = function () {
 		checkPerson.checked = false;
 		checkRoom.checked = false;
 		checkAbstract.checked = false;
+		checkBookmark.checked = false
 
 		checkConcentration.checked = false;
 		checkNegotiable.checked = false;
@@ -234,7 +236,7 @@ window.onload = function () {
 		let url = `https://kdb.tsukuba.ac.jp/syllabi/2021/${line[0]}/jpn`;
 		let methods = ["対面", "オンデマンド", "同時双方向"].filter(it => line[10].indexOf(it) > -1);
 
-		tr.innerHTML += `<td>${line[0]}<br/>${line[1]}<br/><a href="${url}" class="syllabus" target="_blank">シラバス</a></td>`;
+		tr.innerHTML += `<td>${line[0]}<br/>${line[1]}<br/><a href="${url}" class="syllabus" target="_blank">シラバス</a><input type="checkbox" onclick='onBookmarkChanged(event);' class="bookmark" id="bookmark-${line[0]}" value="${line[0]}" /></td>`;
 		tr.innerHTML += `<td>${line[3]}単位<br/>${line[4]}年次</td>`;
 		tr.innerHTML += `<td>${line[5]}<br/>${line[6]}</td>`;
 		tr.innerHTML += `<td>${line[7].replace(/,/g, "<br/>")}</td>`;
@@ -253,6 +255,7 @@ window.onload = function () {
 	// update the table
 	const updateTable = (options, index, displayedIndex) => {
 		let regex = new RegExp(options.keyword);
+		let bookmarks = getBookmarks()
 
 		index = typeof index === 'undefined' ? 0 : index;
 		displayedIndex = typeof displayedIndex === "undefined" ? 0 : displayedIndex;
@@ -327,6 +330,7 @@ window.onload = function () {
 			let missMatchesSeason = options.season != "null" && line[5].indexOf(options.season) < 0;
 			let missMatchesModule = options.module_ != "null" && line[5].indexOf(options.module_) < 0;
 			let missMatchesOnline = options.online != "null" && line[10].indexOf(options.online) < 0;
+			let missMatchesBookmark = options.bookmark && !bookmarks.includes(line[0])
 
 			let missMatchesYear;
 			if (line[4].indexOf("-") < 0) {
@@ -348,12 +352,17 @@ window.onload = function () {
 				missMatchesPeriod ||
 				missMatchesOnline ||
 				missMatchesYear ||
+				missMatchesBookmark ||
 				(missMatchesReq_A || missMatchesReq_B || missMatchesReq_C)) {
 				index++;
 				continue;
 			}
 
 			createLine(line);
+
+			// Make bookmarked buttons active
+			document.getElementById("bookmark-" + line[0]).checked = getBookmarks().includes(line[0])
+
 			timeout = setTimeout(() => updateTable(options, index + 1, ++displayedIndex), 0);
 			break;
 		}
@@ -426,6 +435,7 @@ window.onload = function () {
 		options.concentration = checkConcentration.checked;
 		options.negotiable = checkNegotiable.checked;
 		options.asneeded = checkAsNeeded.checked;
+		options.bookmark = checkBookmark.checked;
 
 		if (isUnder1100px) {
 			let seasonModule = selectModule.options[selectModule.selectedIndex].value;
@@ -532,3 +542,57 @@ window.onload = function () {
 		clearButton.addEventListener('click', clearButtonListener);
 	});
 };
+
+// Bookmark
+function getBookmarks() {
+	let cookies = [];
+	if (document.cookie !== '') {
+		let split = document.cookie.split('; ')
+		for (let i = 0; i < split.length; i++) {
+			let data = split[i].split('=');
+			cookies[data[0]] = decodeURIComponent(data[1])
+		}
+	}
+	if (cookies['bookmarks'] != null) return cookies['bookmarks'].split(',');
+	else return [];
+}
+
+function onBookmarkChanged(event) {
+	let subjectId = event.target.value;
+
+	const saveBookmark = (bookmarks) => {
+		let value = "";
+		for (let i = 0; i < bookmarks.length; i++) {
+			value += "," + bookmarks[i];
+		}
+		value = encodeURIComponent(value.substr(1, value.length - 1))
+		document.cookie = "bookmarks=" + value + "; path=/"
+
+	}
+
+	const addBookmark = (subjectId) => {
+		let bookmarks = getBookmarks()
+		if (bookmarks.includes(subjectId)) {
+			return false;
+
+		} else {
+			bookmarks.push(subjectId);
+			saveBookmark(bookmarks);
+		}
+	}
+
+	const removeBookmark = (subjectId) => {
+		let bookmarks = getBookmarks()
+		if (!bookmarks.includes(subjectId)) {
+			return false;
+
+		} else {
+			let newBookmarks = bookmarks.filter(value => value !== subjectId);
+			saveBookmark(newBookmarks);
+			return true;
+		}
+	}
+
+	if (event.target.checked) addBookmark(subjectId);
+	else removeBookmark(subjectId);
+}
