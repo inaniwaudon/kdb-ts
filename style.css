@@ -336,6 +336,7 @@ input[type="checkbox"].bookmark  {
 	width: 1.7em !important;
 	height: 1.7em;
 	background: transparent;
+	border-style: none;
 	text-align: left;
 	color: #aaa;
 	font-weight: bold;
