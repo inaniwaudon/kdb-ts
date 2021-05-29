@@ -83,14 +83,14 @@ window.onload = function () {
 				selectedPeriods[x][y] = false;
                 }
 
-		selectedPeriodsSpan.innerHTML = "指定なし"
+		selectedPeriodsSpan.innerHTML = "指定なし";
 
 		checkName.checked = true;
 		checkNo.checked = true;
 		checkPerson.checked = false;
 		checkRoom.checked = false;
 		checkAbstract.checked = false;
-		checkBookmark.checked = false
+		checkBookmark.checked = false;
 
 		checkConcentration.checked = false;
 		checkNegotiable.checked = false;
@@ -181,7 +181,7 @@ window.onload = function () {
 
 						let text = "";
 						for (let day in selectedPeriods) {
-							let dayText = ""
+							let dayText = "";
 							for (let time in selectedPeriods[day])
 								if (selectedPeriods[day][time])
 									dayText += Number(time) + 1;
@@ -252,7 +252,7 @@ window.onload = function () {
 		tr.innerHTML += `<td>${line[8].replace(/,/g, "<br/>")}</td>`;
 
 		if (methods.length < 1)
-			tr.innerHTML += "<td>不詳</td>"
+			tr.innerHTML += "<td>不詳</td>";
 		else
 			tr.innerHTML += `<td>${methods.join('<br/>')}<br /></td>`;
 
@@ -264,7 +264,7 @@ window.onload = function () {
 	// update the table
 	const updateTable = (options, index, displayedIndex) => {
 		let regex = new RegExp(options.keyword);
-		let bookmarks = getBookmarks()
+		let bookmarks = getBookmarks();
 
 		index = typeof index === 'undefined' ? 0 : index;
 		displayedIndex = typeof displayedIndex === "undefined" ? 0 : displayedIndex;
@@ -370,7 +370,7 @@ window.onload = function () {
 			createLine(line);
 
 			// Make bookmarked buttons active
-			document.getElementById("bookmark-" + line[0]).checked = getBookmarks().includes(line[0])
+			document.getElementById("bookmark-" + line[0]).checked = getBookmarks().includes(line[0]);
 
 			timeout = setTimeout(() => updateTable(options, index + 1, ++displayedIndex), 0);
 			break;
@@ -556,7 +556,7 @@ window.onload = function () {
 function getBookmarks() {
 	let cookies = [];
 	if (document.cookie !== '') {
-		let split = document.cookie.split('; ')
+		let split = document.cookie.split('; ');
 		for (let i = 0; i < split.length; i++) {
 			let data = split[i].split('=');
 			cookies[data[0]] = decodeURIComponent(data[1])
@@ -580,7 +580,7 @@ function onBookmarkChanged(event) {
 	}
 
 	const addBookmark = (subjectId) => {
-		let bookmarks = getBookmarks()
+		let bookmarks = getBookmarks();
 		if (bookmarks.includes(subjectId)) {
 			return false;
 
@@ -591,7 +591,7 @@ function onBookmarkChanged(event) {
 	}
 
 	const removeBookmark = (subjectId) => {
-		let bookmarks = getBookmarks()
+		let bookmarks = getBookmarks();
 		if (!bookmarks.includes(subjectId)) {
 			return false;
 
