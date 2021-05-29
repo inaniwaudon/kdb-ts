@@ -73,8 +73,17 @@ window.onload = function () {
 		form.year.value = "null";
 
 		for (let periods of timetablePeriods)
-			for (let period of periods)
+			for (let period of periods) {
 				period.classList.remove("selected");
+				period.classList.value= "item period";
+                        }
+
+		for (let x = 0; x < 7; x++) {
+			for (let y = 0; y < 6; y++) 
+				selectedPeriods[x][y] = false;
+                }
+
+		selectedPeriodsSpan.innerHTML = "指定なし"
 
 		checkName.checked = true;
 		checkNo.checked = true;
