@@ -567,7 +567,6 @@ function onBookmarkChanged(event) {
 		}
 		value = encodeURIComponent(value.substr(1, value.length - 1))
 		document.cookie = "bookmarks=" + value + "; path=/; expires=Tue, 31-Dec-2037 00:00:00 GMT; "
-
 	}
 
 	const addBookmark = (subjectId) => {
