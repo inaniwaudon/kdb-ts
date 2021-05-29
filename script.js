@@ -85,6 +85,9 @@ window.onload = function () {
 
 		selectedPeriodsSpan.innerHTML = "指定なし";
 
+			if (isUnder1100px)
+				timetableLink.innerHTML = "曜日・時限を選択";
+
 		checkName.checked = true;
 		checkNo.checked = true;
 		checkPerson.checked = false;
