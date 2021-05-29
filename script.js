@@ -566,7 +566,7 @@ function onBookmarkChanged(event) {
 			value += "," + bookmarks[i];
 		}
 		value = encodeURIComponent(value.substr(1, value.length - 1))
-		document.cookie = "bookmarks=" + value + "; path=/"
+		document.cookie = "bookmarks=" + value + "; path=/; expires=Tue, 31-Dec-2037 00:00:00 GMT; "
 
 	}
 
