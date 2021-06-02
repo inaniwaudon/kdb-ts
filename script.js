@@ -73,15 +73,27 @@ window.onload = function () {
 		form.year.value = "null";
 
 		for (let periods of timetablePeriods)
-			for (let period of periods)
+			for (let period of periods) {
 				period.classList.remove("selected");
+				period.classList.value= "item period";
+                        }
+
+		for (let x = 0; x < 7; x++) {
+			for (let y = 0; y < 6; y++) 
+				selectedPeriods[x][y] = false;
+                }
+
+		selectedPeriodsSpan.innerHTML = "指定なし";
+
+			if (isUnder1100px)
+				timetableLink.innerHTML = "曜日・時限を選択";
 
 		checkName.checked = true;
 		checkNo.checked = true;
 		checkPerson.checked = false;
 		checkRoom.checked = false;
 		checkAbstract.checked = false;
-		checkBookmark.checked = false
+		checkBookmark.checked = false;
 
 		checkConcentration.checked = false;
 		checkNegotiable.checked = false;
@@ -172,7 +184,7 @@ window.onload = function () {
 
 						let text = "";
 						for (let day in selectedPeriods) {
-							let dayText = ""
+							let dayText = "";
 							for (let time in selectedPeriods[day])
 								if (selectedPeriods[day][time])
 									dayText += Number(time) + 1;
@@ -243,7 +255,7 @@ window.onload = function () {
 		tr.innerHTML += `<td>${line[8].replace(/,/g, "<br/>")}</td>`;
 
 		if (methods.length < 1)
-			tr.innerHTML += "<td>不詳</td>"
+			tr.innerHTML += "<td>不詳</td>";
 		else
 			tr.innerHTML += `<td>${methods.join('<br/>')}<br /></td>`;
 
@@ -255,7 +267,7 @@ window.onload = function () {
 	// update the table
 	const updateTable = (options, index, displayedIndex) => {
 		let regex = new RegExp(options.keyword);
-		let bookmarks = getBookmarks()
+		let bookmarks = getBookmarks();
 
 		index = typeof index === 'undefined' ? 0 : index;
 		displayedIndex = typeof displayedIndex === "undefined" ? 0 : displayedIndex;
@@ -361,7 +373,7 @@ window.onload = function () {
 			createLine(line);
 
 			// Make bookmarked buttons active
-			document.getElementById("bookmark-" + line[0]).checked = getBookmarks().includes(line[0])
+			document.getElementById("bookmark-" + line[0]).checked = getBookmarks().includes(line[0]);
 
 			timeout = setTimeout(() => updateTable(options, index + 1, ++displayedIndex), 0);
 			break;
