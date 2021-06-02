@@ -545,15 +545,8 @@ window.onload = function () {
 
 // Bookmark
 function getBookmarks() {
-	let cookies = [];
-	if (document.cookie !== '') {
-		let split = document.cookie.split('; ')
-		for (let i = 0; i < split.length; i++) {
-			let data = split[i].split('=');
-			cookies[data[0]] = decodeURIComponent(data[1])
-		}
-	}
-	if (cookies['bookmarks'] != null) return cookies['bookmarks'].split(',');
+	let value = localStorage.getItem('kdb_bookmarks');
+	if (value != null) return decodeURIComponent(value).split(',');
 	else return [];
 }
 
@@ -565,13 +558,12 @@ function onBookmarkChanged(event) {
 		for (let i = 0; i < bookmarks.length; i++) {
 			value += "," + bookmarks[i];
 		}
-		value = encodeURIComponent(value.substr(1, value.length - 1))
-		document.cookie = "bookmarks=" + value + "; path=/"
-
+		value = encodeURIComponent(value.substr(1, value.length - 1));
+		localStorage.setItem('kdb_bookmarks', value);
 	}
 
 	const addBookmark = (subjectId) => {
-		let bookmarks = getBookmarks()
+		let bookmarks = getBookmarks();
 		if (bookmarks.includes(subjectId)) {
 			return false;
 
@@ -582,7 +574,7 @@ function onBookmarkChanged(event) {
 	}
 
 	const removeBookmark = (subjectId) => {
-		let bookmarks = getBookmarks()
+		let bookmarks = getBookmarks();
 		if (!bookmarks.includes(subjectId)) {
 			return false;
 
