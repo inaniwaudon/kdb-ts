@@ -35,4 +35,5 @@ jobs:
           git config --global user.name "GitHub Action"
           git add .
           git commit -m "update csv: $(date +%Y%m%d)"
+          git pull origin master
           git push origin master

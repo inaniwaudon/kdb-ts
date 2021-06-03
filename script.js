@@ -1,4 +1,5 @@
 let subjectMap = {};
+let bookmarkTable;
 
 window.onload = function () {
 	const table = document.querySelector("table#body tbody");
@@ -75,15 +76,27 @@ window.onload = function () {
 		form.year.value = "null";
 
 		for (let periods of timetablePeriods)
-			for (let period of periods)
+			for (let period of periods) {
 				period.classList.remove("selected");
+				period.classList.value= "item period";
+                        }
+
+		for (let x = 0; x < 7; x++) {
+			for (let y = 0; y < 6; y++) 
+				selectedPeriods[x][y] = false;
+                }
+
+		selectedPeriodsSpan.innerHTML = "指定なし";
+
+			if (isUnder1100px)
+				timetableLink.innerHTML = "曜日・時限を選択";
 
 		checkName.checked = true;
 		checkNo.checked = true;
 		checkPerson.checked = false;
 		checkRoom.checked = false;
 		checkAbstract.checked = false;
-		checkBookmark.checked = false
+		checkBookmark.checked = false;
 
 		checkConcentration.checked = false;
 		checkNegotiable.checked = false;
@@ -163,7 +176,7 @@ window.onload = function () {
 
 						let text = "";
 						for (let day in selectedPeriods) {
-							let dayText = ""
+							let dayText = "";
 							for (let time in selectedPeriods[day])
 								if (selectedPeriods[day][time])
 									dayText += Number(time) + 1;
@@ -234,7 +247,7 @@ window.onload = function () {
 		tr.innerHTML += `<td>${line.person.replace(/,/g, "<br/>")}</td>`;
 
 		if (methods.length < 1)
-			tr.innerHTML += "<td>不詳</td>"
+			tr.innerHTML += "<td>不詳</td>";
 		else
 			tr.innerHTML += `<td>${methods.join('<br/>')}<br /></td>`;
 
@@ -246,7 +259,7 @@ window.onload = function () {
 	// update the table
 	const updateTable = (options, index, displayedIndex) => {
 		let regex = new RegExp(options.keyword);
-		let bookmarks = getBookmarks()
+		let bookmarks = getBookmarks();
 
 		index = typeof index === 'undefined' ? 0 : index;
 		displayedIndex = typeof displayedIndex === "undefined" ? 0 : displayedIndex;
@@ -565,6 +578,8 @@ window.onload = function () {
 
 		search(null);
 		updatedDate.innerHTML = updated;
+		bookmarkTable = new BookmarkTimetable();
+		bookmarkTable.update();
 	})();
 
 	window.addEventListener('resize', () => {
@@ -591,8 +606,6 @@ window.onload = function () {
 		timetableLink.addEventListener(supportsTouch ? "touchstart" : "click", timetableListener);
 		clearButton.addEventListener('click', clearButtonListener);
 	},{ passive: true });
-
-	new bookmarkTimetable();
 };
 
 
@@ -610,15 +623,8 @@ const createTimeTable = (filled) => {
 
 // Bookmark
 function getBookmarks() {
-	let cookies = [];
-	if (document.cookie !== '') {
-		let split = document.cookie.split('; ')
-		for (let i = 0; i < split.length; i++) {
-			let data = split[i].split('=');
-			cookies[data[0]] = decodeURIComponent(data[1])
-		}
-	}
-	if (cookies['bookmarks'] != null) return cookies['bookmarks'].split(',');
+	let value = localStorage.getItem('kdb_bookmarks');
+	if (value != null) return decodeURIComponent(value).split(',');
 	else return [];
 }
 
@@ -630,13 +636,12 @@ function onBookmarkChanged(event) {
 		for (let i = 0; i < bookmarks.length; i++) {
 			value += "," + bookmarks[i];
 		}
-		value = encodeURIComponent(value.substr(1, value.length - 1))
-		document.cookie = "bookmarks=" + value + "; path=/"
-
+		value = encodeURIComponent(value.substr(1, value.length - 1));
+		localStorage.setItem('kdb_bookmarks', value);
 	}
 
 	const addBookmark = (subjectId) => {
-		let bookmarks = getBookmarks()
+		let bookmarks = getBookmarks();
 		if (bookmarks.includes(subjectId)) {
 			return false;
 
@@ -647,7 +652,7 @@ function onBookmarkChanged(event) {
 	}
 
 	const removeBookmark = (subjectId) => {
-		let bookmarks = getBookmarks()
+		let bookmarks = getBookmarks();
 		if (!bookmarks.includes(subjectId)) {
 			return false;
 
@@ -660,6 +665,10 @@ function onBookmarkChanged(event) {
 
 	if (event.target.checked) addBookmark(subjectId);
 	else removeBookmark(subjectId);
+
+	bookmarkTable.update();
+	if (subjectMap[subjectId].terms.normalNo.length > 0)
+		bookmarkTable.switchTimetable(subjectMap[subjectId].terms.normalNo[0]);
 }
 
 function removeAllBookmarks() {
@@ -673,7 +682,7 @@ function removeAllBookmarks() {
 
 
 // timetable displaying blookmarked subjects
-class bookmarkTimetable {
+class BookmarkTimetable {
 	constructor() {
 		this.module = 0;
 		this.maxModule = 6;
@@ -747,6 +756,7 @@ class bookmarkTimetable {
 
 	update() {
 		let credit = 0.0;
+		let bookmarks = getBookmarks();
 
 		// timetable
 		for (let termNo = 0; termNo < this.maxModule; termNo++) {
@@ -756,7 +766,10 @@ class bookmarkTimetable {
 					item.innerHTML = "";
 					let no = 0;
 
-					for (let code of this.subjects) {
+					for (let code of bookmarks) {
+						if (!(code in subjectMap))
+							continue;
+
 						let subject = subjectMap[code];
 						let period = subject.period.period;
 
@@ -792,8 +805,8 @@ class bookmarkTimetable {
 		}
 
 		// credit
-		for (let code of this.subjects)
-			if (!isNaN(subjectMap[code].credit))
+		for (let code of bookmarks)
+			if (code in subjectMap && !isNaN(subjectMap[code].credit))
 				credit += Number(subjectMap[code].credit);
 
 		// status
