@@ -19,12 +19,12 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com">
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 	<link href="style.css" rel="stylesheet" />
-
+	<link href="bookmark.css" rel="stylesheet" />
 	<script src="script.js"></script>
 </head>
 
 <body>
-	<header>
+	<header id="top">
 		<div class="content">
 			<form>
 				<p>
@@ -118,6 +118,7 @@
 		</p>
 	</div>
 
+
 	<div id="page">
 		<main>
 			<table id="body">
@@ -143,6 +144,54 @@
 			--><a href="javascript:void(0)" id="download">CSVダウンロード</a><br/>
 
 			<span id="updated-date"></span> 時点での 筑波大学KdB（<a href="https://kdb.tsukuba.ac.jp/">https://kdb.tsukuba.ac.jp/</a>）のデータに基づきます
+		</footer>
+	</div>
+
+	<div id="bookmark-timetable">
+		<div class="main">
+			<header>
+				<div id="current-status"><!--
+					--><a class="previous">〈</a><!--
+					--><span class="module"></span><!--
+					--><a class="next">〉</a><!--
+					--><span class="credit"></span><!--
+				--></div><!--
+				--><a id="close-bookmark-table">×</a>
+			</header>
+			<div class="content">
+				<ul class="no tile">
+					<li>1</li>
+					<li>2</li>
+					<li>3</li>
+					<li>4</li>
+					<li>5</li>
+					<li>6</li>
+				</ul>
+				<div class="table-wrapper">
+					<div class="display-area">
+						<ul class="table-list"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer class="tile">
+			<p>
+				<!--必修
+				<select>
+					<option>情報学群</option>
+				</select>
+				<select>
+					<option>1</option>
+					<option>2</option>
+					<option>3</option>
+					<option>4</option>
+					<option>5</option>
+					<option>6</option>
+				</select>
+				<a id="export-twinte">Twin:teにエクスポート</a>
+				<a id="timetable-tweet">ツイート</a>-->
+				<a id="clear-bookmarks">すべて削除</a>
+			</p>
 		</footer>
 	</div>
 </body>
