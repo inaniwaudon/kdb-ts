@@ -29,7 +29,7 @@ header#top p {
 	margin:0;
 }
 
-p#requirement {
+header#top p#requirement {
 	margin-top: 0.4rem;
 }
 
@@ -106,7 +106,7 @@ header#top select.requirement + select.requirement {
 	margin-right: 0.4rem;
 }
 
-#display-timetable-sp {
+header#top #display-timetable-sp {
 	width: 12.9rem;
 	margin-left: 0.5rem;
 	vertical-align: top;
@@ -149,7 +149,7 @@ header#top .button.sub {
 	background: linear-gradient(30deg, #f2e6ff, #fff);
 }
 
-#clear-sp, #submit-sp {
+header#top #clear-sp, header#top #submit-sp {
 	display: none;
 }
 
@@ -313,23 +313,27 @@ form {
 
 /* media query */
 @media screen and (max-width: 1100px) {
-	header .h4 {
+	header#top .h4 {
 		display: none;
 	}
-	#clear, #submit {
+	header#top #clear, header#top #submit {
 		display: none;
 	}
-	#clear-sp, #submit-sp {
+	header#top #clear-sp, header#top #submit-sp {
 		display: inline-block;
 	}
-	#keyword-options {
+	header#top #keyword-options {
 		display: block;
 	}
-	header #period {
+	header#top #period {
 		display: none;
 	}
-	header #period-sp {
+	header#top #period-sp {
 		display: block;
+	}
+
+	#bookmark-timetable {
+		display: none;
 	}
 }
 

@@ -17,7 +17,7 @@
 	color: #333;
 	font-size: 1.4rem;
 	margin-bottom: -0.4rem;
-	text-shadow: 0 0 2px #fff, 0 0 4px #fff, 0 0 6px #fff;
+	text-shadow: 0 0 2px #fff, 0 0 4px #fff, 0 0 6px #fff, 0 0 2px #fff;
 	display: flex;
 	justify-content: flex-end;
 }
@@ -45,11 +45,15 @@
 	display: inline-block;
 }
 
-#close-bookmark {
+#close-bookmark-table {
 	color: #666;
 	font-size: 1.6rem;
 	margin-left: 0.4rem;
 	display: block;
+}
+
+#close-bookmark-table.closed {
+	margin-top: -0.2rem;
 }
 
 #bookmark-timetable .tile {
@@ -191,8 +195,9 @@
 #bookmark-timetable footer a {
 	color: #63c;
 }
-#bookmark-timetable footer a#clear-bookmark {
+#bookmark-timetable footer a#clear-bookmarks {
 	color: #c00;
+	padding: 0 6rem;
 }
 #bookmark-timetable footer:hover {
 	color: #ccc;

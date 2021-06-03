@@ -79,17 +79,16 @@ window.onload = function () {
 			for (let period of periods) {
 				period.classList.remove("selected");
 				period.classList.value= "item period";
-                        }
+			}
 
-		for (let x = 0; x < 7; x++) {
+		for (let x = 0; x < 7; x++)
 			for (let y = 0; y < 6; y++) 
 				selectedPeriods[x][y] = false;
-                }
 
 		selectedPeriodsSpan.innerHTML = "指定なし";
 
-			if (isUnder1100px)
-				timetableLink.innerHTML = "曜日・時限を選択";
+		if (isUnder1100px)
+			timetableLink.innerHTML = "曜日・時限を選択";
 
 		checkName.checked = true;
 		checkNo.checked = true;
@@ -341,7 +340,7 @@ window.onload = function () {
 			createLine(line);
 
 			// Make bookmarked buttons active
-			document.getElementById("bookmark-" + line.code).checked = getBookmarks().includes(line.code)
+			document.getElementById("bookmark-" + line.code).checked = getBookmarks().includes(line.code);
 
 			timeout = setTimeout(() => updateTable(options, index + 1, ++displayedIndex), 0);
 			break;
@@ -397,6 +396,7 @@ window.onload = function () {
 
 	// search
 	const search = (e) => {
+		console.log(e);
 		// clear tbody contents
 		table.innerHTML = '';
 
@@ -602,6 +602,8 @@ window.onload = function () {
 			timetableLink = document.getElementById("display-timetable");
 		}
 
+		bookmarkTable.resized();
+
 		submitButton.onclick = search;
 		timetableLink.addEventListener(supportsTouch ? "touchstart" : "click", timetableListener);
 		clearButton.addEventListener('click', clearButtonListener);
@@ -628,17 +630,29 @@ function getBookmarks() {
 	else return [];
 }
 
+const saveBookmark = (bookmarks) => {
+	let value = "";
+	for (let i = 0; i < bookmarks.length; i++) {
+		value += "," + bookmarks[i];
+	}
+	value = encodeURIComponent(value.substr(1, value.length - 1));
+	localStorage.setItem('kdb_bookmarks', value);
+}
+
+const removeBookmark = (subjectId) => {
+	let bookmarks = getBookmarks();
+	if (!bookmarks.includes(subjectId)) {
+		return false;
+
+	} else {
+		let newBookmarks = bookmarks.filter(value => value !== subjectId);
+		saveBookmark(newBookmarks);
+		return true;
+	}
+}
+
 function onBookmarkChanged(event) {
 	let subjectId = event.target.value;
-
-	const saveBookmark = (bookmarks) => {
-		let value = "";
-		for (let i = 0; i < bookmarks.length; i++) {
-			value += "," + bookmarks[i];
-		}
-		value = encodeURIComponent(value.substr(1, value.length - 1));
-		localStorage.setItem('kdb_bookmarks', value);
-	}
 
 	const addBookmark = (subjectId) => {
 		let bookmarks = getBookmarks();
@@ -651,18 +665,6 @@ function onBookmarkChanged(event) {
 		}
 	}
 
-	const removeBookmark = (subjectId) => {
-		let bookmarks = getBookmarks();
-		if (!bookmarks.includes(subjectId)) {
-			return false;
-
-		} else {
-			let newBookmarks = bookmarks.filter(value => value !== subjectId);
-			saveBookmark(newBookmarks);
-			return true;
-		}
-	}
-
 	if (event.target.checked) addBookmark(subjectId);
 	else removeBookmark(subjectId);
 
@@ -671,13 +673,11 @@ function onBookmarkChanged(event) {
 		bookmarkTable.switchTimetable(subjectMap[subjectId].terms.normalNo[0]);
 }
 
-function removeAllBookmarks() {
-	/*let trs = document.querySelectorAll(`table#body a.bookmarked`);
-	for (let tr of trs)
-		tr.classList.remove("bookmarked");
-
-	this.subjects = [];
-	this.update();*/
+const removeAllBookmarks = () => {
+	let bookmarks = getBookmarks();
+	for (let subjectId of bookmarks)
+		removeBookmark(subjectId);
+	bookmarkTable.update();
 }
 
 
@@ -687,23 +687,23 @@ class BookmarkTimetable {
 		this.module = 0;
 		this.maxModule = 6;
 		this.periodItems = [];
-		this.displaysTimetable = false;
+		this.displaysTimetable = true;
 
 		this.main = document.querySelector("#bookmark-timetable .main");
 		this.timetable = document.querySelector("#bookmark-timetable ul.table-list");
 		this.moduleDisplay = document.querySelector("#current-status .module");
 		this.credit = document.querySelector("#current-status .credit");
+		this.close = document.querySelector("#close-bookmark-table");
 
 		// button
 		const clearBookmark = document.querySelector("#clear-bookmarks");
-		clearBookmark.addEventListener("click", () => this.removeAll());
+		clearBookmark.addEventListener("click", () => removeAllBookmarks());
 
 		const previous = document.querySelector("#current-status .previous");
 		const next = document.querySelector("#current-status .next");
-		const close = document.querySelector("#close-bookmark-table");
 		previous.addEventListener("click", () => this.shiftTimetable(false));
 		next.addEventListener("click", () => this.shiftTimetable(true));
-		close.addEventListener("click", () => this.switchDisplayTimetable());
+		this.close.addEventListener("click", () => this.switchDisplayTimetable());
 
 		// create tables
 		for (let termNo = 0; termNo < this.maxModule; termNo++) {
@@ -727,15 +727,23 @@ class BookmarkTimetable {
 			this.timetable.append(table);
 		}
 
-		let firstTimetable = document.querySelector("#bookmark-timetable ul.table-list li");
-		this.width = firstTimetable.clientWidth;
-
+		this.resized();
 		this.update();
 	}
 
+	resized() {
+		let firstTimetable = document.querySelector("#bookmark-timetable ul.table-list li");
+		this.width = firstTimetable.clientWidth;
+	}
+
 	switchDisplayTimetable() {
-		this.main.style.marginBottom = !this.displaysTimetable ? `calc(${-this.main.clientHeight}px + 1.8rem)` : 0;
+		this.main.style.marginBottom = this.displaysTimetable ? `calc(${-this.main.clientHeight}px + 1.8rem)` : 0;
 		this.displaysTimetable = !this.displaysTimetable;
+		this.close.innerHTML = this.displaysTimetable ? "×" : "︿";
+		if (this.displaysTimetable)
+			this.close.classList.remove("closed");
+		else
+			this.close.classList.add("closed");
 	}
 
 	shiftTimetable(isForward) {
