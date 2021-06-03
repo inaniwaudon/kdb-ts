@@ -4,7 +4,11 @@ html, body {
 	padding: 0;
 }
 
-header {
+a {
+	cursor: pointer;
+}
+
+header#top {
 	width: 100%;
 	top: 0;
 	background: linear-gradient(90deg, rgba(242,230,255,0.95), rgba(255,255,255,0.95) 250px);
@@ -15,12 +19,12 @@ form * {
 	-webkit-text-size-adjust: 100%;
 }
 
-header form {
+header#top form {
 	position: sticky;
 	top: 0;
 }
 
-header p {
+header#top p {
 	line-height: 1.8rem;
 	margin:0;
 }
@@ -29,20 +33,20 @@ p#requirement {
 	margin-top: 0.4rem;
 }
 
-header div.content {
+header#top div.content {
 	width: 1100px;
 	margin: auto;
 	padding: 0.6rem 1rem;
 }
 
-header .h4 {
+header#top .h4 {
 	width: 6rem;
 	text-align: justify;
 	margin-right: 1.4rem;
 	display: inline-block;
 }
 
-header input[type="text"], header select {
+header#top input[type="text"], header select {
 	height: 1.8rem;
 	line-height: 1.8rem;
 	padding:0 0.4rem;
@@ -75,15 +79,15 @@ header input[type="text"], header select {
 	border-bottom: solid 1px #63c;
 }
 
-header input[type="text"] {
+header#top input[type="text"] {
 	width: 22rem;
 }
 
-header select.requirement {
+header#top select.requirement {
 	width: calc((22.8rem - 0.4rem * 6 - 0.5rem * 2)/ 3);
 }
 
-header select.requirement + select.requirement {
+header#top select.requirement + select.requirement {
 	margin-left: 0.5rem;
 }
 
@@ -111,7 +115,7 @@ header select.requirement + select.requirement {
 	text-overflow: ellipsis;
 }
 
-header .button {
+header#top .button {
 	width: 8rem;
 	height: 1rem;
 	line-height:1rem;
@@ -123,7 +127,7 @@ header .button {
 	display: inline-block;
 }
 
-header .button.right {
+header#top .button.right {
 	margin-left: 0.5rem;
 }
 
@@ -140,7 +144,7 @@ header .button.right {
 	margin: 0 0.2rem 0 4.8rem;
 }
 
-header .button.sub {
+header#top .button.sub {
 	color: #60c;
 	background: linear-gradient(30deg, #f2e6ff, #fff);
 }
