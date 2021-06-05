@@ -674,7 +674,11 @@ function onBookmarkChanged(event) {
 }
 
 const removeAllBookmarks = () => {
-	let bookmarks = getBookmarks();
+	const isApproved = window.confirm("すべてのお気に入りの科目が削除されます。よろしいですか？");
+	if (!isApproved)
+		return;
+
+	const bookmarks = getBookmarks();
 	for (let subjectId of bookmarks)
 		removeBookmark(subjectId);
 	bookmarkTable.update();
