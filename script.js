@@ -12,6 +12,7 @@ window.onload = function () {
 	let submitButton = document.getElementById("submit");
 	const downloadLink = document.getElementById("download");
 	const updatedDate = document.getElementById("updated-date");
+	const bookmarkInfo = document.getElementById("bookmark-info");
 
 	//clear button
 	let clearButton = document.getElementById("clear");
@@ -589,10 +590,31 @@ window.onload = function () {
 
 		search(null);
 		updatedDate.innerHTML = updated;
+
+		// bookmark
 		bookmarkTable = new BookmarkTimetable();
 		bookmarkTable.update();
+
+		let firstBookmark = document.querySelector("input.bookmark");
+		if (!isUnder1100px && localStorage.getItem("kdb_bookmarks") == null)
+			bookmarkInfo.style.opacity = 1;
+		else
+			bookmarkInfo.style.display = "none";
+
+		let bounding = firstBookmark.getBoundingClientRect();
+		bookmarkInfo.style.left = bounding.left + 28 + "px";
+		bookmarkInfo.style.top = bounding.top + 4 + "px";
 	})();
 
+
+	// scroll
+	window.addEventListener("scroll", () => {
+		bookmarkInfo.style.opacity = 0;
+		setTimeout(() => bookmarkInfo.style.display = "none", 300);
+	});
+
+
+	// resize
 	window.addEventListener('resize', () => {
 		let supportsTouch = "ontouchend" in document
 		timetableLink.removeEventListener(supportsTouch ? "touchstart" : "click", timetableListener)
