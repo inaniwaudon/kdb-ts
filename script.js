@@ -679,8 +679,12 @@ const removeAllBookmarks = () => {
 		return;
 
 	const bookmarks = getBookmarks();
-	for (let subjectId of bookmarks)
+	for (let subjectId of bookmarks) {
 		removeBookmark(subjectId);
+		let bookmark = document.getElementById("bookmark-" + subjectId);
+		if (bookmark != null)
+			bookmark.checked = false;
+	}
 	bookmarkTable.update();
 }
 
