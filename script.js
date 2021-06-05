@@ -241,7 +241,7 @@ window.onload = function () {
 
 		tr.innerHTML += `<td>${line.code}<br/>${line.name}<br/><a href="${url}" class="syllabus" target="_blank">シラバス</a><input type="checkbox" onclick='onBookmarkChanged(event);' class="bookmark" id="bookmark-${line.code}" value="${line.code}" /></td></td>`;
 		tr.innerHTML += `<td>${line.credit}単位<br/>${line.year}年次</td>`;
-		tr.innerHTML += `<td>${line.module}<br/>${line.periodStr}</td>`;
+		tr.innerHTML += `<td>${line.termStr}<br/>${line.periodStr}</td>`;
 		tr.innerHTML += `<td>${line.room.replace(/,/g, "<br/>")}</td>`;
 		tr.innerHTML += `<td>${line.person.replace(/,/g, "<br/>")}</td>`;
 
@@ -286,28 +286,29 @@ window.onload = function () {
 			// period
 			let missMatchesPeriod = true;
 			let isNotSpecifiedPeriod = true;
-			for (let day in options.period) {
-				for (let time in options.period[day]) {
-					if (options.period[day][time]) {
-						isNotSpecifiedPeriod = false;
-						if (line.period.period[day][time])
-							missMatchesPeriod = false;
+			for (let period of line.period) {
+				for (let day in options.period) {
+					for (let time in options.period[day]) {
+						if (options.period[day][time]) {
+							isNotSpecifiedPeriod = false;
+							if (period.period[day][time])
+								missMatchesPeriod = false;
+						}
 					}
 				}
+
+				if ((options.concentration && period.concentration) ||
+					(options.negotiable && period.negotiable) ||
+					(options.asneeded && period.asneeded))
+					missMatchesPeriod = false;
 			}
-
-			if ((options.concentration && line.period.concentration) ||
-				(options.negotiable && line.period.negotiable) ||
-				(options.asneeded && line.period.asneeded))
-				missMatchesPeriod = false;
-
 
 			if (isNotSpecifiedPeriod && !options.concentration && !options.negotiable && !options.asneeded)
 				missMatchesPeriod = false;
 
 			// other options
-			let missMatchesSeason = options.season != "null" && line.module.indexOf(options.season) < 0;
-			let missMatchesModule = options.module_ != "null" && line.module.indexOf(options.module_) < 0;
+			let missMatchesSeason = options.season != "null" && line.termStr.indexOf(options.season) < 0;
+			let missMatchesModule = options.module_ != "null" && line.termStr.indexOf(options.module_) < 0;
 			let missMatchesOnline = options.online != "null" && line.note.indexOf(options.online) < 0;
 			let missMatchesBookmark = options.bookmark && !bookmarks.includes(line.code)
 
@@ -396,7 +397,6 @@ window.onload = function () {
 
 	// search
 	const search = (e) => {
-		console.log(e);
 		// clear tbody contents
 		table.innerHTML = '';
 
@@ -501,7 +501,7 @@ window.onload = function () {
 				name: line[1],
 				credit: line[3],
 				year: line[4],
-				module: line[5],
+				termStr: line[5],
 				periodStr: line[6],
 				room : line[7],
 				person: line[8],
@@ -513,62 +513,73 @@ window.onload = function () {
 			};
 
 			// term (season - module)
-			line.terms = {
-				holiday: { spring: false, summer: false, autumn: false, winter: false },
-				normal: {
-					spring: { a: false, b: false, c: false },
-					autumn: { a: false, b: false, c: false }
-				},
-				normalNo: []
-			};
+			// term code
+			// : spring A-C: 0-2
+			// : autumn A-C: 3-5
+			// : holiday spring, summer, autumn, winter: 6-9
+			line.terms = [];
+			let termGroups = line.termStr.split(" ");
+			let allSeasons = ["春", "夏", "秋", "冬"];
+			let season;
 
-			let seasonMap = {
-				"春": "spring",
-				"夏": "summer",
-				"秋": "autumn",
-				"冬": "winter"
-			};
-			// holiday
-			if (line.module.indexOf("休業") > -1) {
-				for (let season in seasonMap)
-					if (line.module.indexOf(season) > -1)
-						line.terms.holiday[seasonMap[season]] = true;
-			}
-			// normal
-			else {
-				let termArray = Array.from(line.module);
-				for (let char of termArray) {
-					if (char == "春" || char == "秋")
+			for (let groupStr of termGroups) {
+				let group = [];
+				let charArray = Array.from(groupStr);
+				for (let char of charArray) {
+					if (allSeasons.includes(char))
 						season = char;
-					if ((char == "A" || char == "B" || char == "C") && season) {
-						line.terms.normal[seasonMap[season]][char.toLowerCase()] = true;
-						let no = season == "春" ? 0 : 3;
-						no += char == "A" ? 0 : (char == "B" ? 1 : 2);
-						line.terms.normalNo.push(no);
+
+					if (season) {
+						if (["A", "B", "C"].includes(char)) {
+							let no = (season == "春" ? 0 : 3) + (char == "A" ? 0 : char == "B" ? 1 : 2);
+							group.push(no);
+						}
+						if (char == "休")
+							group.push(allSeasons.indexOf(season) + 6);
 					}
 				}
+				line.terms.push(group);
 			}
 
-			// period
-			line.period = {
-				concentration : line.periodStr.indexOf("集中") > -1,
-				negotiable : line.periodStr.indexOf("応談") > -1,
-				asneeded : line.periodStr.indexOf("随時") > -1,
-				period: createTimeTable(false)
-			};
+			// period (day - time)
+			line.period = [];
+			let termStrArray = line.periodStr.split(" ");
 
-			let originalPeriods = line.periodStr.split(/[, ]/);
-			let day = null;
-			for (let period of originalPeriods) {
-				let firstChar = period.charAt(0);
-				if (daysofweek.includes(firstChar))
-					day = daysofweek.indexOf(firstChar);
+			for (let j in termStrArray) {
+				let term = termStrArray[j];
+				let periodStrArray = term.split(",");
+				let dayArray = [];
+				line.period.push({
+					concentration : term.indexOf("集中") > -1,
+					negotiable : term.indexOf("応談") > -1,
+					asneeded : term.indexOf("随時") > -1,
+					period: createTimeTable(false)
+				});
 
-				let time_str = period.replace(/[^0-9]/g, "");
-				if (time_str.length > 0) {
-					let time = Number(time_str);
-					if (day != null)
-						line.period.period[day][time-1] = true;
+				for (let period of periodStrArray) {
+					let dayStr = period.replace(/[0-9\-]/g, "");
+					let days = dayStr.split("・").filter(element => daysofweek.includes(element))
+						.map(element => daysofweek.indexOf(element));
+					if (days.length > 0)
+						dayArray = days;
+
+					let timeArray = [];
+					let timeStr = period.replace(/[^0-9\-]/g, "");
+
+					if (timeStr.indexOf("-") > -1) {
+						let timeStrArray = timeStr.split("-");
+						let startTime = Number(timeStrArray[0]);
+						let endTime = Number(timeStrArray[1]);
+						for (let k = startTime; k <= endTime; k++)
+							timeArray.push(k);
+					}
+					else
+						timeArray.push(Number(timeStr));
+
+					if (timeStr.length > 0)
+						for (let day of dayArray)
+							for (let time of timeArray)
+								line.period[j].period[day][time-1] = true;
 				}
 			}
 
@@ -669,8 +680,8 @@ function onBookmarkChanged(event) {
 	else removeBookmark(subjectId);
 
 	bookmarkTable.update();
-	if (subjectMap[subjectId].terms.normalNo.length > 0)
-		bookmarkTable.switchTimetable(subjectMap[subjectId].terms.normalNo[0]);
+	if (subjectMap[subjectId].terms.length > 0 && subjectMap[subjectId].terms[0].length > 0)
+		bookmarkTable.switchTimetable(subjectMap[subjectId].terms[0]);
 }
 
 const removeAllBookmarks = () => {
@@ -763,7 +774,7 @@ class BookmarkTimetable {
 	}
 
 	switchTimetable(moduleNo) {
-		if (this.module != moduleNo) {
+		if (this.module != moduleNo && moduleNo < 6) {
 			this.module = moduleNo;
 			this.timetable.style.marginLeft = this.width * this.module * -1 + "px";
 			this.update();
@@ -785,35 +796,47 @@ class BookmarkTimetable {
 					for (let code of bookmarks) {
 						if (!(code in subjectMap))
 							continue;
-
 						let subject = subjectMap[code];
-						let period = subject.period.period;
 
-						if (subject.terms.normalNo.includes(termNo) && period[x][y]) {
-							let div = document.createElement("div");
-							let h = 200 + no * 20;
-							div.className = "class";
-							div.innerHTML = subject.name;
-							div.style.margin = 0.1 * (no + 1) + "rem";
-							div.style.background = `hsl(${h}, 100%, 90%, 0.8)`;
+						// term
+						for (let subjectTermNo in subject.terms) {
+							if (!subject.terms[subjectTermNo].includes(termNo))
+								continue;
 
-							let remove = document.createElement("a");
-							remove.classList.add("remove");
-							remove.innerHTML = "×";
-							div.appendChild(remove);
+							// period
+							let startNo, endNo;
+							[startNo, endNo] = subject.terms.length == subject.period.length
+								? [subjectTermNo, subjectTermNo] : [0, subject.period.length - 1];
 
-							div.addEventListener("mouseover", () => {
-								remove.classList.add("displayed");
-							});
-							div.addEventListener("mouseout", () => {
-								remove.classList.remove("displayed");
-							});
-							remove.addEventListener("click", () => {
-								this.remove(code);
-							})
+							for (let i = startNo; i <= endNo; i++) {
+								let period = subject.period[i].period;
+								if (period[x][y]) {
+									let div = document.createElement("div");
+									let h = 200 + no * 20;
+									div.className = "class";
+									div.innerHTML = subject.name;
+									div.style.margin = 0.1 * (no + 1) + "rem";
+									div.style.background = `hsl(${h}, 100%, 90%, 0.8)`;
+									item.appendChild(div);
+									no++;
 
-							item.appendChild(div);
-							no++;
+									// remove button
+									let remove = document.createElement("a");
+									remove.classList.add("remove");
+									remove.innerHTML = "×";
+									div.appendChild(remove);
+
+									div.addEventListener("mouseover", () => {
+										remove.classList.add("displayed");
+									});
+									div.addEventListener("mouseout", () => {
+										remove.classList.remove("displayed");
+									});
+									remove.addEventListener("click", () => {
+										this.remove(code);
+									});
+								}
+							}
 						}
 					}
 				}
