@@ -681,7 +681,7 @@ function onBookmarkChanged(event) {
 
 	bookmarkTable.update();
 	if (subjectMap[subjectId].terms.length > 0 && subjectMap[subjectId].terms[0].length > 0)
-		bookmarkTable.switchTimetable(subjectMap[subjectId].terms[0]);
+		bookmarkTable.switchTimetable(subjectMap[subjectId].terms[0][0]);
 }
 
 const removeAllBookmarks = () => {
@@ -833,7 +833,8 @@ class BookmarkTimetable {
 										remove.classList.remove("displayed");
 									});
 									remove.addEventListener("click", () => {
-										this.remove(code);
+										removeBookmark(code);
+										this.update();
 									});
 								}
 							}
