@@ -29,11 +29,15 @@ jobs:
           python download.py
           python csv-json.py ../csv/kdb-$(date +%Y%m%d).csv list.txt False
           cd ..
-      - name: Push and Commit
+      - name: Pull and Commit
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
           git add .
           git commit -m "update csv: $(date +%Y%m%d)"
           git pull origin master
-          git push origin master
+      - name: Push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
