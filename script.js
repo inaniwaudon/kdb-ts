@@ -856,6 +856,9 @@ class BookmarkTimetable {
 									});
 									remove.addEventListener("click", () => {
 										removeBookmark(code);
+										let bookmark = document.getElementById("bookmark-" + code);
+										if (bookmark != null)
+											bookmark.checked = false;
 										this.update();
 									});
 								}
