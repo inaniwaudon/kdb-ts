@@ -6,7 +6,7 @@ import requests
 
 
 class PostDict(TypedDict):
-    """Dict for requesting with POST to KdB
+    """Dict for requesting with POST to KdB.
     """
     index: str
     locale: str
@@ -31,14 +31,14 @@ class PostDict(TypedDict):
 
 
 class KdbDownloader():
-    """Download a CSV file of KdB data
+    """Download a CSV file of KdB data.
     """
 
     def __init__(self, year: int = 2021) -> None:
-        """Initializer
+        """Initializer.
 
         Args:
-            year (int, optional): a year of syllabus. Defaults to 2021.
+            year (int, optional): A year of syllabus. Defaults to 2021.
         """
         requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH"
         self.year = year
@@ -66,38 +66,38 @@ class KdbDownloader():
         }
 
     def get_post(self) -> PostDict:
-        """Get a copy of PostDict
+        """Get a copy of PostDict.
 
         Returns:
-            PostDict: Dict for requesting with POST to KdB
+            PostDict: An Dict for requesting with POST to KdB.
         """
         return self.post.copy()
 
     def download(self, filename: str) -> None:
-        """Download KdB data
+        """Download KdB data.
 
         Args:
-            filename (str): [description]
+            filename (str): A save file path.
         """
         self.__download()
         open(filename, "w", encoding="utf-8").write(self.response_text)
 
     def __download(self) -> None:
-        """Helper for downloading
+        """Helper for downloading.
         """
         self.__start_session()
         self.__search_kdb()
         self.__download_csv()
 
     def __start_session(self) -> None:
-        """Helper for starting session to KdB
+        """Helper for starting session to KdB.
         """
         kdb_url = "https://kdb.tsukuba.ac.jp/"
         self.session = requests.session()
         self.response = self.session.get(kdb_url)
 
     def __search_kdb(self) -> None:
-        """Helper for searching
+        """Helper for searching.
         """
         search_post = self.get_post()
         search_post["_eventId"] = "searchOpeningCourse"
@@ -105,7 +105,7 @@ class KdbDownloader():
         self.do_url = self.response.url
 
     def __download_csv(self) -> None:
-        """Helper for downloading csv
+        """Helper for downloading CSV.
         """
         csv_post = self.get_post()
         csv_post["_eventId"] = "output"
@@ -114,7 +114,7 @@ class KdbDownloader():
 
 
 def main() -> None:
-    """Main
+    """Main.
     """
     import datetime
     import os

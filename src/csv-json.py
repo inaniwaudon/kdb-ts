@@ -8,17 +8,17 @@ from typing import Any, Dict, List, Tuple
 
 
 class KdbCSVtoJSON():
-    """Convert a CSV file of KdB data to a JSON file with configure file defines types
+    """Convert a CSV file of KdB data to a JSON file with configure file defines types.
     """
 
     def __init__(self, csvpath: str, typespath: str,
                  contains_graduate: bool = True) -> None:
-        """Initializer
+        """Initializer.
 
         Args:
-            csvpath (str): KdB data csv path
-            typespath (str): text file path defines type
-            contains_graduate (bool, optional): a flag if it contains graduated subjects. Defaults to True.
+            csvpath (str): A KdB data CSV path.
+            typespath (str): A text file path defines type.
+            contains_graduate (bool, optional): A flag if it contains graduated subjects. Defaults to True.
         """
         self.csvpath = csvpath
         self.typespath = typespath
@@ -34,35 +34,35 @@ class KdbCSVtoJSON():
         }
 
     def get_types(self) -> Dict[str, Any]:
-        """Get an output to convert types txt to JSON
+        """Get an output to convert types txt to JSON.
 
         Returns:
-            Dict[str, Any]: an output to convert types txt to JSON
+            Dict[str, Any]: An output to convert types txt to JSON.
         """
         return self.types
 
     def get_output(self) -> Dict[str, Any]:
-        """Get an output to convert data CSV to JSON
+        """Get an output to convert data CSV to JSON.
 
         Returns:
-            Dict[str, Any]: an output to convert data CSV to JSON
+            Dict[str, Any]: An output to convert data CSV to JSON.
         """
         return self.output
 
     def print_empty_typed_subjects(self) -> None:
-        """Print empty-typed subjects
+        """Print empty-typed subjects.
         """
         for s in self.empty_typed_subjects:
             print(s)
 
     def __get_subjectcode(self, s: str) -> Tuple[List[str], List[str]]:
-        """Get subject code
+        """Get subject code.
 
         Args:
-            s (str): subject name
+            s (str): An subject name.
 
         Returns:
-            Tuple[List[str], List[str]]: codes and except codes which are defined in given config text
+            Tuple[List[str], List[str]]: Codes and except codes which are defined in given config text.
         """
         code = s.replace("]", "").split("[")
         if len(code) == 2:
@@ -75,15 +75,15 @@ class KdbCSVtoJSON():
 
     def __search_type(self, code: str, target_types: Dict[str, Any],
                       types: List[str] = []) -> List[str]:
-        """Search the type
+        """Search the type.
 
         Args:
-            code (str): target code
-            target_types (Dict): dictionary contains info of target types
-            types (List[str]): found types
+            code (str): A target code.
+            target_types (Dict): Dictionary contains info of target types.
+            types (List[str]): Found types.
 
         Returns:
-            List[str]: found types
+            List[str]: found types.
         """
         for key in target_types:
             target_codes = target_types[key]["codes"]
@@ -103,13 +103,13 @@ class KdbCSVtoJSON():
         return types
 
     def __get_types(self) -> Dict[str, Any]:
-        """Get types
+        """Get types.
 
         Args:
-            args (argparse.Namespace): parsed result of command line args
+            args (argparse.Namespace): Parsed result of command line args.
 
         Returns:
-            Dict: a dictionary of types
+            Dict: A dictionary of types.
         """
         types = {}
         first, second = "", ""
@@ -142,13 +142,13 @@ class KdbCSVtoJSON():
         return types
 
     def __get_subjects(self) -> List[List[str]]:
-        """Get subjects
+        """Get subjects.
 
         Args:
-            csvpath (str): a csv file path
+            csvpath (str): A CSV file path.
 
         Returns:
-            List: a list of subjects
+            List: A list of subjects.
         """
         subjects = []
         lines = [line for line in csv.reader(open(self.csvpath))]
@@ -184,10 +184,10 @@ class KdbCSVtoJSON():
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse given cmdargs
+    """Parse given cmdargs.
 
     Returns:
-        argparse.Namespace: parsed arguments
+        argparse.Namespace: Parsed arguments.
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("csv", help="an input csv file")
@@ -200,7 +200,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
-    """main
+    """Main.
     """
     args = parse_args()
     csvpath, typespath, contains_graduate = args.csv, args.types, args.contains_graduate
