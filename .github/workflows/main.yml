@@ -27,7 +27,7 @@ jobs:
         run: |
           cd src
           python download.py
-          python csv-json.py ../csv/kdb-$(date +%Y%m%d).csv list.txt False
+          python csv-json.py "../csv/kdb-$(date +%Y%m%d).csv" list.txt
           cd ..
       - name: Pull and Commit
         run: |
