@@ -1,3 +1,5 @@
+"""Download a CSV file of KdB data.
+"""
 from typing import Optional, TypedDict
 
 import requests
@@ -29,6 +31,9 @@ class PostDict(TypedDict):
 
 
 class KdbDownloader():
+    """Download a CSV file of KdB data
+    """
+
     def __init__(self, year: int = 2021) -> None:
         """Initializer
 

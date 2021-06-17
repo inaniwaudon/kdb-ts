@@ -1,3 +1,5 @@
+"""Convert a CSV file of KdB data to a JSON file with configure file defines types.
+"""
 import argparse
 import csv
 import datetime
@@ -6,6 +8,9 @@ from typing import Any, Dict, List, Tuple
 
 
 class KdbCSVtoJSON():
+    """Convert a CSV file of KdB data to a JSON file with configure file defines types
+    """
+
     def __init__(self, csvpath: str, typespath: str,
                  contains_graduate: bool = True) -> None:
         """Initializer
