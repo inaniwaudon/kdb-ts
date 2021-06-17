@@ -4,12 +4,17 @@ import datetime
 import json
 from typing import Any, Dict, List, Tuple
 
-# TODO: `Dict`型を暇があれば詳しく記述
-
 
 class KdbCSVtoJSON():
     def __init__(self, csvpath: str, typespath: str,
                  contains_graduate: bool = True) -> None:
+        """Initializer
+
+        Args:
+            csvpath (str): KdB data csv path
+            typespath (str): text file path defines type
+            contains_graduate (bool, optional): a flag if it contains graduated subjects. Defaults to True.
+        """
         self.csvpath = csvpath
         self.typespath = typespath
         self.contains_graduate = contains_graduate
@@ -24,12 +29,24 @@ class KdbCSVtoJSON():
         }
 
     def get_types(self) -> Dict[str, Any]:
+        """Get an output to convert types txt to JSON
+
+        Returns:
+            Dict[str, Any]: an output to convert types txt to JSON
+        """
         return self.types
 
     def get_output(self) -> Dict[str, Any]:
+        """Get an output to convert data CSV to JSON
+
+        Returns:
+            Dict[str, Any]: an output to convert data CSV to JSON
+        """
         return self.output
 
     def print_empty_typed_subjects(self) -> None:
+        """Print empty-typed subjects
+        """
         for s in self.empty_typed_subjects:
             print(s)
 
@@ -162,6 +179,11 @@ class KdbCSVtoJSON():
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse given cmdargs
+
+    Returns:
+        argparse.Namespace: parsed arguments
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("csv", help="an input csv file")
     parser.add_argument(
