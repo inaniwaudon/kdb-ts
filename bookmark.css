@@ -32,7 +32,8 @@
 	font-size: 0.8rem;
 }
 
-#current-status .previous, #current-status .next {
+#current-status .previous,
+#current-status .next {
 	line-height: 1.4rem;
 	color: #ccc;
 	text-decoration: none;
@@ -58,8 +59,8 @@
 
 #bookmark-timetable .tile {
 	border-radius: 4px;
-	box-shadow: 0 1px 4px rgba(0,0,0,0.4);
-	background: rgba(255,255,255,0.95);	
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+	background: rgba(255, 255, 255, 0.95);
 }
 
 /* timetable */
@@ -165,7 +166,7 @@
 #bookmark-timetable div.class a.remove {
 	line-height: 1.5rem;
 	color: #fff;
-	text-shadow: 0 1px 2px #c00, 0 0 10px  #c00;
+	text-shadow: 0 1px 2px #c00, 0 0 10px #c00;
 	font-size: 1.5rem;
 	display: none;
 	position: absolute;
@@ -175,7 +176,6 @@
 #bookmark-timetable div.class a.remove.displayed {
 	display: block;
 }
-
 
 /* footer */
 #bookmark-timetable footer {
@@ -210,8 +210,8 @@
 	margin-top: -0.4rem;
 	padding: 0.4rem 0.6rem;
 	border-radius: 4px;
-	box-shadow: 0 1px 4px rgba(0,0,0,0.4);
-	background: rgba(0,0,0,0.6);
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+	background: rgba(0, 0, 0, 0.6);
 	opacity: 0;
 	position: fixed;
 	top: 2rem;
@@ -223,11 +223,12 @@
 	content: "";
 	border-style: solid;
 	border-width: 8px 8px 8px 0;
-	border-color: transparent rgba(0,0,0,0.4) transparent transparent;
+	border-color: transparent rgba(0, 0, 0, 0.4) transparent transparent;
 	position: absolute;
 	left: -8px;
 }
 
-#bookmark-info h4, #bookmark-info p {
+#bookmark-info h4,
+#bookmark-info p {
 	margin: 0;
 }
