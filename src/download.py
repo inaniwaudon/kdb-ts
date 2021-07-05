@@ -95,6 +95,8 @@ class KdbDownloader():
         kdb_url = "https://kdb.tsukuba.ac.jp/"
         self.session = requests.session()
         self.response = self.session.get(kdb_url)
+        if res.status_code != 200:
+            raise ValueError('System failure on KdB.')
 
     def __search_kdb(self) -> None:
         """Helper for searching.
@@ -110,7 +112,13 @@ class KdbDownloader():
         csv_post = self.get_post()
         csv_post["_eventId"] = "output"
         csv_post["outputFormat"] = 0
-        self.response_text = self.session.post(self.do_url, data=csv_post).text
+        res = self.session.post(self.do_url, data=csv_post).text
+        if len(res) == 0:
+            raise ValueError('Response text is empty.')
+        elif 'sys-err-head' in res:
+            raise ValueError('System failure on KdB.')
+        else:
+            self.response_text = res
 
 
 def main() -> None:
