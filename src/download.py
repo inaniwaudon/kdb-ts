@@ -95,7 +95,7 @@ class KdbDownloader():
         kdb_url = "https://kdb.tsukuba.ac.jp/"
         self.session = requests.session()
         self.response = self.session.get(kdb_url)
-        if res.status_code != 200:
+        if self.response.status_code != 200:
             raise ValueError('System failure on KdB.')
 
     def __search_kdb(self) -> None:
