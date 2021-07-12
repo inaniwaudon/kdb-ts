@@ -235,8 +235,7 @@ window.onload = function () {
 		let url_m = `https://make-it-tsukuba.github.io/alternative-tsukuba-syllabus/syllabus/${line[0]}/jpn`;
 		let methods = ["対面", "オンデマンド", "同時双方向"].filter(it => line[10].indexOf(it) > -1);
 
-		tr.innerHTML += `<td>${line[0]}<br/>${line[1]}<br/><a href="${url}" class="syllabus" target="_blank">シラバス</a>`;
-		tr.innerHTML += `<a href="${url_m}" class="syllabus" target="_blank">シラバス（ミラー)</a></td>`;
+		tr.innerHTML += `<td>${line[0]}<br/>${line[1]}<br/><a href="${url}" class="syllabus" target="_blank">シラバス</a><a href="${url_m}" class="syllabus" target="_blank">シラバス（ミラー)</a></td>`;
 		tr.innerHTML += `<td>${line[3]}単位<br/>${line[4]}年次</td>`;
 		tr.innerHTML += `<td>${line[5]}<br/>${line[6]}</td>`;
 		tr.innerHTML += `<td>${line[7].replace(/,/g, "<br/>")}</td>`;
