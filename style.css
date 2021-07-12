@@ -289,7 +289,7 @@ table#body td {
 }
 
 table#body tr td:nth-child(1) {
-	width: 14rem;
+	width: 16rem;
 }
 table#body tr td:nth-child(2) {
 	width: 5rem;
