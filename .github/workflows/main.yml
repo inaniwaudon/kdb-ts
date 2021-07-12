@@ -7,6 +7,7 @@ on:
 
 jobs:
   update:
+    environment: actions
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
