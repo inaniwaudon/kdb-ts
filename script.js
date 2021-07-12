@@ -242,7 +242,7 @@ window.onload = function() {
 		table.appendChild(tr);
 
 		let url = `https://kdb.tsukuba.ac.jp/syllabi/2021/${line.code}/jpn`;
-		let url_m = `https://make-it-tsukuba.github.io/alternative-tsukuba-syllabus/syllabus/${line[0]}/jpn`;
+		let url_m = `https://make-it-tsukuba.github.io/alternative-tsukuba-syllabus/syllabus/${line.code}.html`;
 		let methods = ["対面", "オンデマンド", "同時双方向"].filter(
 			(it) => line.note.indexOf(it) > -1
 		);
