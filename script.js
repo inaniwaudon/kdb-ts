@@ -242,11 +242,12 @@ window.onload = function() {
 		table.appendChild(tr);
 
 		let url = `https://kdb.tsukuba.ac.jp/syllabi/2021/${line.code}/jpn`;
+		let url_m = `https://make-it-tsukuba.github.io/alternative-tsukuba-syllabus/syllabus/${line.code}.html`;
 		let methods = ["対面", "オンデマンド", "同時双方向"].filter(
 			(it) => line.note.indexOf(it) > -1
 		);
 
-		tr.innerHTML += `<td>${line.code}<br/>${line.name}<br/><a href="${url}" class="syllabus" target="_blank">シラバス</a><input type="checkbox" onclick='onBookmarkChanged(event);' class="bookmark" id="bookmark-${line.code}" value="${line.code}" /></td></td>`;
+		tr.innerHTML += `<td>${line.code}<br/>${line.name}<br/><a href="${url}" class="syllabus" target="_blank">シラバス</a><a href="${url_m}" class="syllabus" target="_blank">シラバス（ミラー)</a><input type="checkbox" onclick='onBookmarkChanged(event);' class="bookmark" id="bookmark-${line.code}" value="${line.code}" /></td></td>`;
 		tr.innerHTML += `<td>${line.credit}単位<br/>${line.year}年次</td>`;
 		tr.innerHTML += `<td>${line.termStr}<br/>${line.periodStr}</td>`;
 		tr.innerHTML += `<td>${line.room.replace(/,/g, "<br/>")}</td>`;
