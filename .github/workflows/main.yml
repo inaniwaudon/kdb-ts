@@ -40,7 +40,7 @@ jobs:
           git config --global user.name "GitHub Action"
           git add .
           git commit -m "update csv: $(date +%Y%m%d)"
-          git pull origin master
+          git pull origin ${{ github.ref }}
       - name: Push
         uses: ad-m/github-push-action@master
         with:
