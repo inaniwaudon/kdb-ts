@@ -39,7 +39,7 @@ jobs:
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
-        env:
+        with:
           token: ${{ secrets.GH_ADMIN_TOKEN }}
           title: Sceduled update of syllabus data (${{ steps.date.outputs.date }})
           branch: update_${{ steps.date.outputs.date }}
