@@ -13,6 +13,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [3.8]
+    env:
+        TZ: Asia/Tokyo
     steps:
       - name: Checkout
         uses: actions/checkout@v2
