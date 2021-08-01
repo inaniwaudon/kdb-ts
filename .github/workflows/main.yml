@@ -43,6 +43,7 @@ jobs:
           branch: update_${{ steps.date.outputs.date }}
           author: GitHub Action <action@github.com>
           committer: GitHub Action <action@github.com>
-          commit-message: update csv: ${{ steps.date.outputs.date }}
+          commit-message: |
+            update csv: ${{ steps.date.outputs.date }}
           labels: automated pr
           # delete-branch: true
