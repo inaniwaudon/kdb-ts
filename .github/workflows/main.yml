@@ -13,6 +13,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [3.8]
+    env:
+        TZ: Asia/Tokyo
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -27,20 +29,23 @@ jobs:
           python -m pip install -U pip
           pip install -r src/requirements.txt
       - name: Synchronize the csv file with an up-to-date one
-        env:
-          TZ: Asia/Tokyo
         run: |
           cd src
           python download.py
           python csv-json.py "../csv/kdb-$(date +%Y%m%d).csv" list.txt
           cd ..
-      - name: Pull and Commit
-        env:
-          TZ: Asia/Tokyo
-        run: |
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          git add .
-          git commit -m "update csv: $(date +%Y%m%d)"
-      - name: Push
-        run: git push
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GH_ADMIN_TOKEN }}
+          title: Sceduled update of syllabus data (${{ steps.date.outputs.date }})
+          branch: update_${{ steps.date.outputs.date }}
+          author: GitHub Action <action@github.com>
+          committer: GitHub Action <action@github.com>
+          commit-message: |
+            update csv: ${{ steps.date.outputs.date }}
+          labels: automated pr
+          # delete-branch: true
