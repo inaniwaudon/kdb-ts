@@ -404,15 +404,18 @@ window.onload = function() {
 			row.length = 0;
 			for (let c = 0; c < table_.rows[r].cells.length; c++) {
 				field = table_.rows[r].cells[c].innerText.trim();
-				if (r !== 0 && c === 0) {
-					field = field.slice(0, -5);
-				}
+				field = field.replace("シラバスシラバス（ミラー)", "");
 				row.push(
 					escaped.test(field) ? '"' + field.replace(e, '""') + '"' : field
 				);
+                          
 			}
-			csv.push(row.join(","));
+			csv.push(row.join(",").replace('\n",', '",'));
+			
 		}
+
+
+
 		var blob = new Blob([bom, csv.join("\n")], { type: "text/csv" });
 
 		if (window.navigator.msSaveBlob) {
