@@ -414,8 +414,6 @@ window.onload = function() {
 			
 		}
 
-
-
 		var blob = new Blob([bom, csv.join("\n")], { type: "text/csv" });
 
 		if (window.navigator.msSaveBlob) {
