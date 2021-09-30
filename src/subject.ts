@@ -1,5 +1,6 @@
 import * as timetable from './timetable';
 import { getBookmarks, onBookmarkChanged } from './bookmark';
+import kdb from './kdb.json';
 
 export class Periods {
   private _periods: boolean[][];
@@ -296,10 +297,8 @@ export const subjectCodeList: string[] = [];
 
 export const initializeSubject = async () => {
   // read a json
-  const response = await fetch('kdb.json');
-  const json = await response.json();
-  const subjects = json.subject;
-  const updatedDate = json.updated;
+  const subjects = kdb.subject;
+  const updatedDate = kdb.updated;
 
   // convert into a map
   for (let line of subjects) {
