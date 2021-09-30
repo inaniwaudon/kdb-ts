@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    environment: actions
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
