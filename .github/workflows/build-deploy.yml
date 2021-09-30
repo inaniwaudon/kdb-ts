@@ -17,5 +17,5 @@ jobs:
           token: ${{ secrets.GH_ADMIN_TOKEN }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
-      - name: build:
+      - name: build
         uses: npm run build
