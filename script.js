@@ -1,7 +1,7 @@
 let subjectMap = {};
 let bookmarkTable;
 
-window.onload = function() {
+window.onload = function () {
 	const table = document.querySelector("table#body tbody");
 	const keyword_input = document.querySelector('input[type="text"]');
 	const form = document.getElementsByTagName("form")[0];
@@ -258,6 +258,15 @@ window.onload = function() {
 
 		tr.innerHTML += `<td>${line.abstract}</td>`;
 		tr.innerHTML += `<td>${line.note}</td>`;
+
+		let anchor = tr.children.item(0).children.item(3);
+
+		anchor.addEventListener('click', (evt) => {
+			evt.preventDefault();
+			let win = document.createElement('draggable-window');
+			win.innerHTML = `<div slot="title">${line.name} - シラバス</div><iframe slot="body" src=\"${anchor.href}\" />`;
+			document.body.append(win);
+		})
 	};
 
 	// update the table
@@ -270,7 +279,7 @@ window.onload = function() {
 
 		if (isIOS && displayedIndex >= lineLimit) return;
 
-		for (;;) {
+		for (; ;) {
 			const line = data[index];
 
 			if (typeof line === "undefined") {
@@ -297,10 +306,10 @@ window.onload = function() {
 			let matchesKeyword =
 				options.keyword != "" &&
 				matchesNo &&
-					matchesName &&
-					matchesRoom &&
-					matchesPerson &&
-					matchesAbstract;
+				matchesName &&
+				matchesRoom &&
+				matchesPerson &&
+				matchesAbstract;
 
 			// period
 			let missMatchesPeriod = true;
@@ -408,10 +417,10 @@ window.onload = function() {
 				row.push(
 					escaped.test(field) ? '"' + field.replace(e, '""') + '"' : field
 				);
-                          
+
 			}
 			csv.push(row.join(",").replace('\n",', '",'));
-			
+
 		}
 
 		var blob = new Blob([bom, csv.join("\n")], { type: "text/csv" });

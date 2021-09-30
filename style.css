@@ -385,3 +385,9 @@ input[type="checkbox"].bookmark:before {
 input[type="checkbox"].bookmark:checked {
 	color: #60c;
 }
+
+iframe {
+	border: none;
+	width: 100%;
+	height: 100%;
+}
