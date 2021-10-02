@@ -45,15 +45,18 @@ export function RenderSubjectAsTableRow(subject: Subject): HTMLTableRowElement {
       subject.code,
       lineBreak(),
       subject.name,
+      lineBreak(),
       anchorOfficial,
       anchorMirror,
       bookmarkCheckbox
     ),
     createColumn(`${subject.credit}単位`, lineBreak(), `${subject.year}年次`),
     createColumn(subject.termStr, lineBreak(), subject.periodStr),
-    createColumn(...subject.room.split(/,/g).flatMap(it => [it, lineBreak()])),
-    createColumn(...subject.person.split(/,/g).flatMap(it => [it, lineBreak()])),
-    methods.length < 1 ? createColumn('不詳') : createColumn(...methods.flatMap(it => [it, lineBreak()])),
+    createColumn(...subject.room.split(/,/g).flatMap((it) => [it, lineBreak()])),
+    createColumn(...subject.person.split(/,/g).flatMap((it) => [it, lineBreak()])),
+    methods.length < 1
+      ? createColumn('不詳')
+      : createColumn(...methods.flatMap((it) => [it, lineBreak()])),
     createColumn(subject.abstract),
     createColumn(subject.note)
   );
