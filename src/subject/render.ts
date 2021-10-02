@@ -12,7 +12,7 @@ export function RenderSubjectAsTableRow(subject: Subject): HTMLTableRowElement {
   );
 
   const tr = document.createElement('tr');
-  const lineBreak = document.createElement('br');
+  const lineBreak = () => document.createElement('br');
 
   const anchorOfficial = document.createElement('a');
   anchorOfficial.href = `https://kdb.tsukuba.ac.jp/syllabi/2021/${subject.code}/jpn`;
@@ -43,17 +43,17 @@ export function RenderSubjectAsTableRow(subject: Subject): HTMLTableRowElement {
   tr.append(
     createColumn(
       subject.code,
-      lineBreak,
+      lineBreak(),
       subject.name,
       anchorOfficial,
       anchorMirror,
       bookmarkCheckbox
     ),
-    createColumn(`${subject.credit}単位`, lineBreak, `${subject.year}年次`),
-    createColumn(subject.termStr, lineBreak, subject.periodStr),
-    createColumn(subject.room.replace(/,/g, '<br/>')),
-    createColumn(subject.person.replace(/,/g, '<br/>')),
-    methods.length < 1 ? createColumn('不詳') : createColumn(methods.join('<br/>')),
+    createColumn(`${subject.credit}単位`, lineBreak(), `${subject.year}年次`),
+    createColumn(subject.termStr, lineBreak(), subject.periodStr),
+    createColumn(...subject.room.split(/,/g).flatMap(it => [it, lineBreak()])),
+    createColumn(...subject.person.split(/,/g).flatMap(it => [it, lineBreak()])),
+    methods.length < 1 ? createColumn('不詳') : createColumn(...methods.flatMap(it => [it, lineBreak()])),
     createColumn(subject.abstract),
     createColumn(subject.note)
   );
