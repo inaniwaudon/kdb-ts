@@ -1,4 +1,4 @@
-import { Periods } from './subject';
+import { Periods } from "./subject/period";
 
 export const daysofweek = ['月', '火', '水', '木', '金', '土', '日'];
 export const maxTime = 6;
