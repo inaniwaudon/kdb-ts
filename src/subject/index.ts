@@ -1,6 +1,6 @@
-import * as timetable from './timetable';
-import { getBookmarks, onBookmarkChanged } from './bookmark';
-import kdb from './kdb.json';
+import * as timetable from '../timetable';
+import { getBookmarks, onBookmarkChanged } from '../bookmark';
+import type { KdbData } from '../types';
 
 export class Periods {
   private _periods: boolean[][];
@@ -117,10 +117,10 @@ export class Subject {
   private negotiable = false;
   private asneeded = false;
 
-  constructor(line: any) {
+  constructor(line: KdbData['subject'][0]) {
     this._code = line[0];
     this._name = line[1];
-    this._credit = line[3];
+    this._credit = parseInt(line[3]);
     this.year = line[4];
     this.termStr = line[5];
     this.periodStr = line[6];
@@ -198,8 +198,10 @@ export class Subject {
     const url = `https://kdb.tsukuba.ac.jp/syllabi/2021/${this.code}/jpn`;
     const url_m = `https://make-it-tsukuba.github.io/alternative-tsukuba-syllabus/syllabus/${this.code}.html`;
     const methods = ['対面', 'オンデマンド', '同時双方向'].filter(
+
       (it) => this.note.indexOf(it) > -1
     );
+
     const tr = document.createElement('tr');
     tr.innerHTML =
       `<td>${this.code}<br/>${this.name}<br/>` +
@@ -296,6 +298,7 @@ export const subjectMap: {
 export const subjectCodeList: string[] = [];
 
 export const initializeSubject = async () => {
+  const kdb = (await import('../kdb.json')) as unknown as KdbData;
   // read a json
   const subjects = kdb.subject;
   const updatedDate = kdb.updated;
