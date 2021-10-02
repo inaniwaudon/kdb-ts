@@ -20,16 +20,12 @@
 		<meta property="og:description" content="筑波大学 KdBっぽいなにか" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<!-- <link rel="icon" href="favicon.ico" />
-	<meta property="og:image" content="favicon.ico" /> -->
+		<meta property="og:image" content="favicon.ico" /> -->
 		<link rel="preconnect" href="https://fonts.gstatic.com" />
 		<link
 			href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap"
 			rel="stylesheet"
 		/>
-		<link href="style.css" rel="stylesheet" />
-		<link href="bookmark.css" rel="stylesheet" />
-		<script src="window.js"></script>
-		<script src="script.js"></script>
 	</head>
 
 	<body>
@@ -41,6 +37,7 @@
 						<input
 							type="text"
 							placeholder="科目番号は前方一致、その他は正規表現に対応"
+							id="keyword"
 						/><!--
 					--><a href="#" id="submit" class="button right">検索</a>
 						<span id="keyword-options">
@@ -99,7 +96,7 @@
 							<span class="h4">曜日・時限</span>
 							<span id="selected-periods">指定なし</span
 							><!--
-						--><a id="display-timetable" class="button right sub">選択</a>
+						--><a id="display-timetable" class="button right sub"></a>
 						</p>
 					</div>
 					<div id="period-sp">
@@ -165,7 +162,8 @@
 			<p class="special">
 				<label><input type="checkbox" id="check-concentration" />集中</label>
 				<label><input type="checkbox" id="check-negotiable" />応談</label>
-				<label><input type="checkbox" id="check-asneeded" />随時</label>
+				<label><input type="checkbox" id="check-asneeded" />随時</label><br />
+				<label><input type="checkbox" />ブックマークを除外</label>
 			</p>
 		</div>
 
