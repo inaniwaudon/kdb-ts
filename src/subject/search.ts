@@ -33,7 +33,16 @@ export function matchesSearchOptions(subject: Subject, options: SearchOptions): 
   const matchesPerson = options.containsPerson && subject.person.match(regex) != null;
   const matchesAbstract = options.containsAbstract && subject.abstract.match(regex) != null;
   const matchesKeyword =
-    matchesCode || matchesName || matchesRoom || matchesPerson || matchesAbstract;
+    (!options.containsCode &&
+      !options.containsName &&
+      !options.containsRoom &&
+      !options.containsPerson &&
+      !options.containsAbstract) ||
+    matchesCode ||
+    matchesName ||
+    matchesRoom ||
+    matchesPerson ||
+    matchesAbstract;
 
   // period
   let matchesPeriods =
