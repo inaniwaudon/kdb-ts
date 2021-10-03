@@ -12,6 +12,7 @@ export interface SearchOptions {
   season: string | null;
   module: string | null;
   periods: Periods;
+  disablePeriods: Periods | null;
   containsName: boolean;
   containsCode: boolean;
   containsRoom: boolean;
@@ -35,15 +36,22 @@ export function matchesSearchOptions(subject: Subject, options: SearchOptions): 
     matchesCode || matchesName || matchesRoom || matchesPerson || matchesAbstract;
 
   // period
-  const matchesPeriods =
-    options.periods.length == 0 ||
-    subject.periodsArray.reduce<boolean>(
-      (accumulator, periods) => accumulator || periods.matches(options.periods),
-      false
-    ) ||
-    (options.concentration && subject.concentration) ||
-    (options.negotiable && subject.negotiable) ||
-    (options.asneeded && subject.asneeded);
+  let matchesPeriods =
+    !(
+      options.disablePeriods != null &&
+      subject.periodsArray.reduce<boolean>(
+        (accumulator, periods) => accumulator || periods.matches(options.disablePeriods!),
+        false
+      )
+    ) &&
+    (options.periods.length == 0 ||
+      subject.periodsArray.reduce<boolean>(
+        (accumulator, periods) => accumulator || periods.matches(options.periods),
+        false
+      ) ||
+      (options.concentration && subject.concentration) ||
+      (options.negotiable && subject.negotiable) ||
+      (options.asneeded && subject.asneeded));
 
   // standard year of course
   let matchesYear;

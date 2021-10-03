@@ -48,7 +48,6 @@ export const onBookmarkChanged = (event: Event) => {
   ) {
     switchTimetable(subjectMap[subjectCode].termCodes[0][0]);
   }
-  console.log(event);
 };
 
 const clearBookmarks = () => {
@@ -199,6 +198,11 @@ export const update = () => {
             for (let i = startNo; i <= endNo; i++) {
               let periods = subject.periodsArray[i];
               if (periods.get(day, time)) {
+                // exclude from the timetable for search
+                if (moduleNo == displayingModule) {
+                  timetable.disablePeriods.set(day, time, true);
+                }
+
                 let div = document.createElement('div');
                 let h = 200 + no * 20;
                 div.className = 'class';

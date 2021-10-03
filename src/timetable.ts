@@ -14,6 +14,7 @@ export let dom: {
   checkConcentration: HTMLInputElement;
   checkNegotiable: HTMLInputElement;
   checkAsNeeded: HTMLInputElement;
+  checkExcludeBookmark: HTMLInputElement;
 };
 
 export const create = <T>(filled: T): T[][] => {
@@ -42,7 +43,7 @@ const updateDOM = () => {
     for (let time = 0; time < maxTime; time++) {
       dom.periods[day][time].classList.remove('disabled');
       dom.periods[day][time].classList.remove('selected');
-      if (disablePeriods.get(day, time)) {
+      if (disablePeriods.get(day, time) && dom.checkExcludeBookmark.checked) {
         dom.periods[day][time].classList.add('disabled');
       } else if (selectedPeriods.get(day, time)) {
         dom.periods[day][time].classList.add('selected');
@@ -67,7 +68,6 @@ export const clear = () => {
       selectedPeriods.set(day, time, false);
     }
   }
-  updateDOM();
   dom.checkConcentration.checked = false;
   dom.checkNegotiable.checked = false;
   dom.checkAsNeeded.checked = false;
@@ -83,10 +83,17 @@ export const initialize = () => {
     checkConcentration: document.getElementById('check-concentration') as HTMLInputElement,
     checkNegotiable: document.getElementById('check-negotiable') as HTMLInputElement,
     checkAsNeeded: document.getElementById('check-asneeded') as HTMLInputElement,
+    checkExcludeBookmark: document.getElementById('check-exclude-bookmark') as HTMLInputElement,
   };
 
   selectedPeriods = new Periods();
+  selectedPeriods.onchanged = updateDOM;
   disablePeriods = new Periods();
+  disablePeriods.onchanged = () => {
+    updateDOM();
+  };
+  dom.checkExcludeBookmark.addEventListener('click', updateDOM);
+
   let beforeSelected: { x: number; y: number } | null = null;
   let selectedMousePeriods: boolean[][] | null = null;
 
@@ -120,13 +127,13 @@ export const initialize = () => {
                 Math.min(x, beforeSelected.x) <= day &&
                 day <= Math.max(x, beforeSelected.x) &&
                 Math.min(y, beforeSelected.y) <= time + 1 &&
-                time + 1 <= Math.max(y, beforeSelected.y)
+                time + 1 <= Math.max(y, beforeSelected.y) &&
+                !(disablePeriods.get(day, time) && dom.checkExcludeBookmark.checked)
               ) {
                 selectedPeriods.set(day, time, !selectedMousePeriods![day][time]);
               } else {
                 selectedPeriods.set(day, time, selectedMousePeriods![day][time]);
               }
-              updateDOM();
             }
           }
         };
@@ -155,5 +162,4 @@ export const initialize = () => {
       }
     }
   }
-  updateDOM();
 };
