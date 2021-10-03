@@ -54,8 +54,16 @@ export class Periods {
     return this._periods;
   }
 
+  clear() {
+    for (const day in this._periods) {
+      for (const time in this._periods[day]) {
+        this._periods[day][time] = false;
+      }
+    }
+  }
+
   set(day: number, time: number, state: boolean) {
-    this.periods[day][time] = state;
+    this._periods[day][time] = state;
   }
 
   get(day: number, time: number) {
