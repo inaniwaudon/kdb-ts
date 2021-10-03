@@ -24,7 +24,7 @@ export class Subject {
   constructor(line: KdbData['subject'][0]) {
     this._code = line[0];
     this._name = line[1];
-    this._credit = parseInt(line[3]);
+    this._credit = parseFloat(line[3]);
     this.year = line[4];
     this.termStr = line[5];
     this.periodStr = line[6];
