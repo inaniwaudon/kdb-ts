@@ -51,13 +51,6 @@ class DraggableWindow extends HTMLElement {
     shadow.append(win);
 
     titleSlot.addEventListener('slotchange', () => {
-      title.childNodes.forEach((it) => {
-        if (it == titleSlot) {
-          return;
-        }
-        //it.remove();
-      });
-
       const nodes = titleSlot.assignedElements();
 
       nodes.forEach((it) => {
@@ -68,13 +61,6 @@ class DraggableWindow extends HTMLElement {
     });
 
     bodySlot.addEventListener('slotchange', () => {
-      body.childNodes.forEach((it) => {
-        if (it == bodySlot) {
-          return;
-        }
-        //it.remove();
-      });
-
       const nodes = bodySlot.assignedElements();
 
       nodes.forEach((it) => {
