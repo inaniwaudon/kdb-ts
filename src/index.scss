@@ -50,7 +50,7 @@ header#top {
 		display: inline-block;
 	}
 
-	input[type="text"],
+	input#keyword,
 	select {
 		height: 1.8rem;
 		line-height: 1.8rem;
@@ -63,7 +63,7 @@ header#top {
 		-webkit-appearance: none;
 	}
 
-	input[type="text"] {
+	input#keyword {
 		width: 22rem;
 	}
 
