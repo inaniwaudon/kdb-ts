@@ -16,11 +16,20 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.ts'],
+    extensions: ['.ts', '.js']
   },
   plugins: [
     new HTMLWebpackPlugin({
       template: './src/index.html',
     }),
   ],
+  performance: {
+    assetFilter: function (assetFilename) {
+      return assetFilename.endsWith('.json');
+    },
+  },
+  devServer: {
+    compress: true,
+    port: 8000,
+  },
 };
