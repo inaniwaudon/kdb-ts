@@ -1,8 +1,9 @@
-import { Periods } from "./subject/period";
+import { Periods } from './subject/period';
 
 export const daysofweek = ['月', '火', '水', '木', '金', '土', '日'];
 export const maxTime = 6;
 export let selectedPeriods: Periods;
+export let disablePeriods: Periods;
 
 export let dom: {
   selectedPeriods: HTMLSpanElement;
@@ -39,11 +40,13 @@ const updateDOM = () => {
   for (let day = 0; day < daysofweek.length; day++) {
     let dayText = '';
     for (let time = 0; time < maxTime; time++) {
-      if (selectedPeriods.get(day, time)) {
+      dom.periods[day][time].classList.remove('disabled');
+      dom.periods[day][time].classList.remove('selected');
+      if (disablePeriods.get(day, time)) {
+        dom.periods[day][time].classList.add('disabled');
+      } else if (selectedPeriods.get(day, time)) {
         dom.periods[day][time].classList.add('selected');
         dayText += Number(time) + 1;
-      } else {
-        dom.periods[day][time].classList.remove('selected');
       }
     }
     if (dayText.length > 0) {
@@ -83,6 +86,7 @@ export const initialize = () => {
   };
 
   selectedPeriods = new Periods();
+  disablePeriods = new Periods();
   let beforeSelected: { x: number; y: number } | null = null;
   let selectedMousePeriods: boolean[][] | null = null;
 
@@ -151,4 +155,5 @@ export const initialize = () => {
       }
     }
   }
+  updateDOM();
 };
