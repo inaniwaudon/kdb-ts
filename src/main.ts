@@ -1,7 +1,9 @@
-import { SearchOptions, Subject, initializeSubject, subjectCodeList, subjectMap } from './subject';
+import { Subject, initializeSubject, subjectCodeList, subjectMap } from './subject';
 import * as timetable from './timetable';
 import * as bookmark from './bookmark';
 import codeTypes from './code-types.json';
+import { matchesSearchOptions, SearchOptions } from './subject/search';
+import { RenderSubjectAsTableRow } from './subject/render';
 
 let dom: {
   form: HTMLFormElement;
@@ -71,11 +73,11 @@ const updateTable = (options: SearchOptions, index: number, displayedIndex: numb
     if (typeof subject === 'undefined') {
       return;
     }
-    if (!subject.matchesSearchOptions(options)) {
+    if (!matchesSearchOptions(subject, options)) {
       index++;
       continue;
     }
-    const tr = subject.createTr();
+    const tr = RenderSubjectAsTableRow(subject);
     dom.tbody.appendChild(tr);
 
     // Make bookmarked buttons active
