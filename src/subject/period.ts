@@ -2,7 +2,7 @@ import * as timetable from '../timetable';
 
 export class Periods {
   private _periods: boolean[][];
-  private func: (() => void) | null = null;
+  private clickHandler: (() => void) | null = null;
 
   constructor(value?: any) {
     this._periods = timetable.create(false);
@@ -44,8 +44,8 @@ export class Periods {
     }
   }
 
-  set onchanged(func: () => void) {
-    this.func = func;
+  set onchanged(clickHandler: () => void) {
+    this.clickHandler = clickHandler;
   }
 
   get length() {
@@ -65,15 +65,15 @@ export class Periods {
         this._periods[day][time] = false;
       }
     }
-    if (this.func != null) {
-      this.func();
+    if (this.clickHandler != null) {
+      this.clickHandler();
     }
   }
 
   set(day: number, time: number, state: boolean) {
     this._periods[day][time] = state;
-    if (this.func != null) {
-      this.func();
+    if (this.clickHandler != null) {
+      this.clickHandler();
     }
   }
 
