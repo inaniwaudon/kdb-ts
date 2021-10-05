@@ -48,7 +48,6 @@ export const onBookmarkChanged = (event: Event) => {
   ) {
     switchTimetable(subjectMap[subjectCode].termCodes[0][0]);
   }
-  console.log(event);
 };
 
 const clearBookmarks = () => {
@@ -71,7 +70,7 @@ const clearBookmarks = () => {
 // timetable displaying blookmarked subjects
 const maxModule = 6;
 let timetableWidth: number;
-let moduleNo = 0;
+let displayingModule = 0;
 let displaysTimetable = true;
 
 let dom: {
@@ -100,20 +99,20 @@ const switchDisplayTimetable = () => {
 };
 
 const switchTimetable = (no: number) => {
-  if (moduleNo != no && no < 6) {
-    moduleNo = no;
-    dom.tableList.style.marginLeft = timetableWidth * moduleNo * -1 + 'px';
+  if (displayingModule != no && no < 6) {
+    displayingModule = no;
+    dom.tableList.style.marginLeft = timetableWidth * displayingModule * -1 + 'px';
     update();
   }
 };
 
 const shiftTimetable = (isForward: boolean) => {
   const maxModule = 5;
-  if (isForward && moduleNo < maxModule) {
-    switchTimetable(moduleNo + 1);
+  if (isForward && displayingModule < maxModule) {
+    switchTimetable(displayingModule + 1);
   }
-  if (!isForward && moduleNo > 0) {
-    switchTimetable(moduleNo - 1);
+  if (!isForward && displayingModule > 0) {
+    switchTimetable(displayingModule - 1);
   }
 };
 
@@ -137,11 +136,11 @@ export const initialize = () => {
 
   // create HTML elements for a table
   let firstTable = null;
-  for (let termNo = 0; termNo < maxModule; termNo++) {
+  for (let moduleNo = 0; moduleNo < maxModule; moduleNo++) {
     let table = document.createElement('li');
     firstTable = firstTable ?? table;
     table.className = 'table tile';
-    dom.periods[termNo] = timetable.create<HTMLLIElement>(null as any);
+    dom.periods[moduleNo] = timetable.create<HTMLLIElement>(null as any);
 
     for (let x = 0; x < timetable.daysofweek.length; x++) {
       let row = document.createElement('ul');
@@ -153,7 +152,7 @@ export const initialize = () => {
           item.innerHTML = timetable.daysofweek[x];
         }
         row.appendChild(item);
-        dom.periods[termNo][x][y] = item;
+        dom.periods[moduleNo][x][y] = item;
       }
       table.appendChild(row);
     }
@@ -167,12 +166,13 @@ export const initialize = () => {
 export const update = () => {
   let credit = 0.0;
   let bookmarks = getBookmarks();
+  timetable.disablePeriods.clear();
 
   // timetable
-  for (let termNo = 0; termNo < maxModule; termNo++) {
+  for (let moduleNo = 0; moduleNo < maxModule; moduleNo++) {
     for (let time = 0; time < timetable.maxTime; time++) {
       for (let day = 0; day < timetable.daysofweek.length; day++) {
-        let item = dom.periods[termNo][day][time];
+        let item = dom.periods[moduleNo][day][time];
         item.innerHTML = '';
         let no = 0;
 
@@ -183,8 +183,8 @@ export const update = () => {
           let subject = subjectMap[code];
 
           // term
-          for (let subjectTermNo in subject.termCodes) {
-            if (!subject.termCodes[subjectTermNo].includes(termNo)) {
+          for (let subjectModuleNo in subject.termCodes) {
+            if (!subject.termCodes[subjectModuleNo].includes(moduleNo)) {
               continue;
             }
 
@@ -192,12 +192,17 @@ export const update = () => {
             let startNo, endNo;
             [startNo, endNo] =
               subject.termCodes.length == subject.periodsArray.length
-                ? [Number(subjectTermNo), Number(subjectTermNo)]
+                ? [Number(subjectModuleNo), Number(subjectModuleNo)]
                 : [0, subject.periodsArray.length - 1];
 
             for (let i = startNo; i <= endNo; i++) {
               let periods = subject.periodsArray[i];
               if (periods.get(day, time)) {
+                // exclude from the timetable for search
+                if (moduleNo == displayingModule) {
+                  timetable.disablePeriods.set(day, time, true);
+                }
+
                 let div = document.createElement('div');
                 let h = 200 + no * 20;
                 div.className = 'class';
@@ -243,8 +248,8 @@ export const update = () => {
   }
 
   // status
-  let season = moduleNo < 3 ? '春' : '秋';
-  let module_ = moduleNo % 3 == 0 ? 'A' : moduleNo % 3 == 1 ? 'B' : 'C';
+  let season = displayingModule < 3 ? '春' : '秋';
+  let module_ = displayingModule % 3 == 0 ? 'A' : displayingModule % 3 == 1 ? 'B' : 'C';
   dom.module.innerHTML = season + module_;
   dom.credit.innerHTML = credit.toFixed(1) + '単位';
 };

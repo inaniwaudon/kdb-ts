@@ -69,9 +69,6 @@ export class Subject {
     let termStrArray = this.periodStr.split(' ');
     for (let str of termStrArray) {
       this._periodsArray.push(new Periods(str));
-      if (this.code == '1425011') {
-        console.log(this.periodsArray, str);
-      }
       this.concentration = str.indexOf('集中') > -1 || this.concentration;
       this.negotiable = str.indexOf('応談') > -1 || this.concentration;
       this.asneeded = str.indexOf('随時') > -1 || this.concentration;

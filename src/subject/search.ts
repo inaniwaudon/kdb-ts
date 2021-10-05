@@ -12,6 +12,7 @@ export interface SearchOptions {
   season: string | null;
   module: string | null;
   periods: Periods;
+  disablePeriods: Periods | null;
   containsName: boolean;
   containsCode: boolean;
   containsRoom: boolean;
@@ -32,18 +33,34 @@ export function matchesSearchOptions(subject: Subject, options: SearchOptions): 
   const matchesPerson = options.containsPerson && subject.person.match(regex) != null;
   const matchesAbstract = options.containsAbstract && subject.abstract.match(regex) != null;
   const matchesKeyword =
-    matchesCode || matchesName || matchesRoom || matchesPerson || matchesAbstract;
+    (!options.containsCode &&
+      !options.containsName &&
+      !options.containsRoom &&
+      !options.containsPerson &&
+      !options.containsAbstract) ||
+    matchesCode ||
+    matchesName ||
+    matchesRoom ||
+    matchesPerson ||
+    matchesAbstract;
 
   // period
-  const matchesPeriods =
-    options.periods.length == 0 ||
-    subject.periodsArray.reduce<boolean>(
-      (accumulator, periods) => accumulator || periods.matches(options.periods),
-      false
-    ) ||
-    (options.concentration && subject.concentration) ||
-    (options.negotiable && subject.negotiable) ||
-    (options.asneeded && subject.asneeded);
+  let matchesPeriods =
+    !(
+      options.disablePeriods != null &&
+      subject.periodsArray.reduce<boolean>(
+        (accumulator, periods) => accumulator || periods.matches(options.disablePeriods!),
+        false
+      )
+    ) &&
+    (options.periods.length == 0 ||
+      subject.periodsArray.reduce<boolean>(
+        (accumulator, periods) => accumulator || periods.matches(options.periods),
+        false
+      ) ||
+      (options.concentration && subject.concentration) ||
+      (options.negotiable && subject.negotiable) ||
+      (options.asneeded && subject.asneeded));
 
   // standard year of course
   let matchesYear;

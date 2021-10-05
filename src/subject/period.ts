@@ -2,6 +2,7 @@ import * as timetable from '../timetable';
 
 export class Periods {
   private _periods: boolean[][];
+  private clickHandler: (() => void) | null = null;
 
   constructor(value?: any) {
     this._periods = timetable.create(false);
@@ -43,6 +44,10 @@ export class Periods {
     }
   }
 
+  set onchanged(clickHandler: () => void) {
+    this.clickHandler = clickHandler;
+  }
+
   get length() {
     return this._periods.reduce(
       (accumulator, day) => day.reduce((sum, time) => (time ? 1 : 0) + sum, 0) + accumulator,
@@ -54,8 +59,22 @@ export class Periods {
     return this._periods;
   }
 
+  clear() {
+    for (const day in this._periods) {
+      for (const time in this._periods[day]) {
+        this._periods[day][time] = false;
+      }
+    }
+    if (this.clickHandler != null) {
+      this.clickHandler();
+    }
+  }
+
   set(day: number, time: number, state: boolean) {
-    this.periods[day][time] = state;
+    this._periods[day][time] = state;
+    if (this.clickHandler != null) {
+      this.clickHandler();
+    }
   }
 
   get(day: number, time: number) {

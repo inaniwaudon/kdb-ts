@@ -126,6 +126,7 @@ const search = (e: Event | null) => {
     containsAbstract: dom.checkbox.abstract.checked,
     containsBookmark: dom.checkbox.bookmark.checked,
     periods: timetable.selectedPeriods,
+    disablePeriods: timetable.dom.checkExcludeBookmark.checked ? timetable.disablePeriods : null,
     concentration: timetable.dom.checkConcentration.checked,
     negotiable: timetable.dom.checkNegotiable.checked,
     asneeded: timetable.dom.checkAsNeeded.checked,
