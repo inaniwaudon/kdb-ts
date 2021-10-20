@@ -95,72 +95,72 @@ header#top {
 			background: linear-gradient(30deg, #f2e6ff, #fff);
 		}
 	}
-}
-
-#selected-periods {
-  width: 22.8rem;
-  line-height: 1em;
-  font-size: 0.9rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: inline-block;
-}
-
-#selected-periods .day-label + .day-label,
-#display-timetable-sp .day-label + .day-label {
-  margin-left: 0.4rem;
-}
-
-#selected-periods .day,
-#display-timetable-sp .day {
-  color: #63c;
-  line-height: 1em;
-  margin-right: 0.1rem;
-  border-bottom: solid 1px #63c;
-}
-
-#period-sp {
-  line-height: 1.8rem;
-  margin-top: 0.4rem;
-  display: none;
-
-  .module {
-    height: 1.8rem;
-    line-height: 1.8rem;
+  
+  #selected-periods {
+    width: 22.8rem;
+    line-height: 1em;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
   }
-}
 
-#select-module {
-  margin-right: 0.4rem;
-}
+  #selected-periods .day-label + .day-label,
+  #display-timetable-sp .day-label + .day-label {
+    margin-left: 0.4rem;
+  }
 
-#display-timetable-sp {
-  width: 12.9rem;
-  margin-left: 0.5rem;
-  vertical-align: top;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  #selected-periods .day,
+  #display-timetable-sp .day {
+    color: #63c;
+    line-height: 1em;
+    margin-right: 0.1rem;
+    border-bottom: solid 1px #63c;
+  }
 
-#submit {
-  margin-right: 1rem;
-}
+  #period-sp {
+    line-height: 1.8rem;
+    margin-top: 0.4rem;
+    display: none;
 
-#submit,
-#submit-sp {
-  color: #fff;
-  background: #60c;
-}
+    .module {
+      height: 1.8rem;
+      line-height: 1.8rem;
+    }
+  }
 
-#clear-sp {
-  margin: 0 0.2rem 0 4.8rem;
-}
+  #select-module {
+    margin-right: 0.4rem;
+  }
 
-header#top #clear-sp,
-header#top #submit-sp {
-  display: none;
+  #display-timetable-sp {
+    width: 12.9rem;
+    margin-left: 0.5rem;
+    vertical-align: top;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #submit {
+    margin-right: 1rem;
+  }
+
+  #submit,
+  #submit-sp {
+    color: #fff;
+    background: #60c;
+  }
+
+  #clear-sp {
+    margin: 0 0.2rem 0 4.8rem;
+  }
+
+  #clear-sp,
+  #submit-sp {
+    display: none;
+  }
 }
 
 /* timetable */
@@ -342,30 +342,32 @@ form {
 
 /* media query */
 @media screen and (max-width: 1100px) {
-  header#top .h4 {
-    display: none;
-  }
+  header#top {
+    .h4 {
+      display: none;
+    }
 
-  #clear,
-  #submit {
-    display: none;
-  }
+    #clear,
+    #submit {
+      display: none;
+    }
 
-  #clear-sp,
-  #submit-sp {
-    display: inline-block;
-  }
+    #clear-sp,
+    #submit-sp {
+      display: inline-block;
+    }
 
-  #keyword-options {
-    display: block;
-  }
+    #keyword-options {
+      display: block;
+    }
 
-  #period {
-    display: none;
-  }
+    #period {
+      display: none;
+    }
 
-  #period-sp {
-    display: block;
+    #period-sp {
+      display: block;
+    }
   }
 
   #bookmark-timetable {
@@ -387,7 +389,6 @@ input[type='checkbox'].bookmark {
   text-align: left;
   color: #aaa;
   font-weight: bold;
-  position: relative;
   vertical-align: middle;
   margin-bottom: 0.2em;
   cursor: pointer;

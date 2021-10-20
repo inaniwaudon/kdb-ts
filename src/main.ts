@@ -199,10 +199,7 @@ window.onload = function () {
     timetable.dom.display.innerHTML = isUnder1100px ? '曜日・時限を選択' : '選択';
     dom.submit.addEventListener('click', search);
     dom.clear.addEventListener('click', clear);
-    timetable.dom.display.addEventListener(
-      supportsTouch ? 'touchstart' : 'click',
-      timetable.display
-    );
+    timetable.dom.display.addEventListener('click', timetable.display);
   };
   resized();
   window.addEventListener('resize', resized, { passive: true });
